@@ -1,0 +1,64 @@
+---
+title: "Table"
+output: html_notebook
+---
+
+```{r}
+# --- 2.1 Sequencing Summary Table (Table 1) ---
+
+# Make sure the 'gt' package is loaded
+library(gt)
+
+# 1. Define the read counts for each sample after quality control
+illumina_reads <- c(79689, 95146, 88794, 69149) # counts of non-chimeric reads
+ont_reads <- c(102299, 107381, 121916, 87402) # read counts from EPI2ME wf-16S report
+
+## illumina_reads <- c(47974, 75906, 67665, 61549)
+## ont_reads <- c(10370, 109020, 122926, 90338)
+
+# 2. Create a summary data frame
+read_summary_data <- tibble(
+  Platform = c("Illumina", "ONT"),
+  Mean_Reads = c(mean(illumina_reads), mean(ont_reads)),
+  SD_Reads = c(sd(illumina_reads), sd(ont_reads))
+) %>%
+  # Create the final display string "mean ± sd"
+  dplyr::mutate(
+    `Mean Reads per Sample (± SD)` = paste0(
+      # format() with big.mark adds a comma for thousands, making it easier to read
+      format(round(Mean_Reads, 0), big.mark = ","),
+      " ± ",
+      format(round(SD_Reads, 0), big.mark = ",")
+    )
+  ) %>%
+  # Keep only the columns we need for the final table
+  dplyr::select(Platform, `Mean Reads per Sample (± SD)`)
+
+
+# 3. Create the styled gt table
+read_summary_table_gt <- read_summary_data %>%
+  gt() %>%
+  tab_header(
+    title = "Table 1 Summary of Sequencing Reads per Sample"
+  ) %>%
+  # Center-align all columns
+  cols_align(
+    align = "center",
+    columns = everything()
+  ) %>%
+  # Apply modern table options
+  tab_options(
+    column_labels.font.weight = "bold",
+    table_body.hlines.style = "none",
+    column_labels.border.bottom.style = "solid",
+    column_labels.border.bottom.width = px(2),
+    table.border.top.style = "none",
+    table.border.bottom.style = "none"
+  )
+
+# 4. Save and display the table
+gtsave(read_summary_table_gt, "tables/Table1_read_summary.png")
+gtsave(read_summary_table_gt, "tables/Table1_read_summary.rtf")
+read_summary_table_gt
+```
+

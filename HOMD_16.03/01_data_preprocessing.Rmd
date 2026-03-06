@@ -1,0 +1,287 @@
+---
+title: "01_data_preprocessing"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+library(vroom)
+```
+
+```{r}
+# ==============================================================================
+# CONFIGURATION: INPUT DATA PATHS
+# ==============================================================================
+# Please specify the file paths to your input abundance tables here.
+# If you are reproducing this analysis, update these paths to match your local environment.
+
+# 1. Path to the Illumina (MiSeq) abundance table (TSV format)
+#    Expected format: QIIME2 output or similar feature table
+illumina_input_path <- "./miseq/table_species_V3-V4_relative/table_species_V3-V4_relative.tsv"
+
+# 2. Path to the Nanopore (ONT) abundance table (TSV format)
+#    Expected format: EPI2ME wf-16s output
+nanopore_input_path <- "./epi2melabs/instances/wf-16s_01K5Z7KHWZP8KBZPWVWT3QSX91/output/abundance_table_species.tsv"
+
+# ==============================================================================
+```
+
+```{r}
+# --- 1.1 Process Illumina (miseq) Data (Step-by-Step) ---
+
+# Define sample mapping and taxonomy levels
+illumina_samples <- c(AP = "1749", BP = "1750", AS = "1751", BS = "1752")
+tax_levels <- c("kingdom", "phylum", "class", "order", "family", "genus", "species")
+
+# --- Step 1.1.1: Import, select, and rename columns ---
+# First, read the file using the path defined in the configuration chunk.
+print(paste("Loading Illumina data from:", illumina_input_path))
+
+illumina_renamed <- vroom::vroom(
+  file = illumina_input_path,
+  delim = "\t", 
+  skip = 1,
+  show_col_types = FALSE
+) %>%
+  dplyr::rename(taxonomy = 1) %>%
+  dplyr::select(taxonomy, !!!illumina_samples)
+
+print("--- Step 1.1: After renaming and selecting ---")
+head(illumina_renamed)
+
+# --- Step 1.1.2: Convert to rounded percentages ---
+# Now, convert the abundance data to the desired format.
+illumina_rel_abundance <- illumina_renamed %>%
+  dplyr::mutate(dplyr::across(
+    .cols = where(is.numeric),
+    .fns = ~ round(.x * 100, 3)
+  ))
+
+print("--- Step 1.1.2: After converting to percentages ---")
+head(illumina_rel_abundance)
+
+# --- Step 1.1.3: Separate and clean taxonomy ---
+# Finally, perform all the taxonomy manipulations.
+illumina_processed <- illumina_rel_abundance %>%
+  tidyr::separate(
+    col = taxonomy,
+    into = tax_levels,
+    sep = ";",
+    fill = "right"
+  ) %>%
+  dplyr::mutate(
+    dplyr::across(
+      .cols = dplyr::all_of(tax_levels), 
+      .fns = ~ stringr::str_remove(., "^[kpcofgsd]?__")
+    ),
+    dplyr::across(
+      .cols = dplyr::all_of(tax_levels), 
+      .fns = ~ dplyr::na_if(., "")
+    )
+  )
+
+print("--- Step 1.1.3: Final cleaned Illumina data ---")
+head(illumina_processed)
+```
+
+```{r}
+# --- 1.2 Process Nanopore (ONT) Data (Step-by-Step) ---
+
+# Define sample mapping and taxonomy levels
+nanopore_samples <- c(AP = "barcode07", BP = "barcode08", AS = "barcode09", BS = "barcode10")
+temp_tax_levels <- c("kingdom", "sub_kingdom", "phylum", "class", "order", "family", "genus", "species")
+final_tax_levels <- c("kingdom", "phylum", "class", "order", "family", "genus", "species")
+
+
+# --- Step 1.2.1: Import, select, and rename columns ---
+print(paste("Loading Nanopore data from:", nanopore_input_path))
+
+nanopore_renamed <- vroom::vroom(
+  file = nanopore_input_path,
+  delim = "\t",
+  show_col_types = FALSE) %>%
+  dplyr::rename(taxonomy = 1) %>%
+  dplyr::select(taxonomy, !!!nanopore_samples)
+
+print("--- Step 1.2.1: After renaming and selecting ---")
+head(nanopore_renamed)
+
+
+# --- Step 1.2.2: Convert counts to rounded percentages ---
+nanopore_rel_abundance <- nanopore_renamed %>%
+  dplyr::mutate(dplyr::across(
+    .cols = where(is.numeric),
+    .fns = ~ round(.x / sum(.x) * 100, 3)
+  ))
+
+print("--- Step 1.2.2: After converting to percentages ---")
+head(nanopore_rel_abundance)
+
+# --- Step 1.2.3: Separate and clean taxonomy ---
+nanopore_processed <- nanopore_rel_abundance %>%
+  tidyr::separate(col = taxonomy, into = temp_tax_levels, sep = ";", fill = "right") %>%
+  # Skip sub_kingdom
+  dplyr::select(dplyr::all_of(final_tax_levels), dplyr::all_of(names(nanopore_samples))) %>%
+  # Handle "Unclassified" and "Unknown"
+  dplyr::mutate(dplyr::across(
+    .cols = dplyr::all_of(final_tax_levels),
+    .fns = ~ dplyr::if_else(tolower(.x) %in% c("unclassified", "unknown"), NA_character_, .x)
+  )) %>%
+  # Clean species column (remove duplicated genus)
+  dplyr::mutate(
+    species = dplyr::if_else(
+      !is.na(genus) & stringr::str_starts(species, paste0(genus, " ")),
+      stringr::str_remove(species, paste0("^", genus, " ")),
+      species
+    )
+  ) %>%
+  # Handle species like "Unclassified_Lachnoanaerobaculum"
+  dplyr::mutate(
+    species = dplyr::if_else(
+      stringr::str_starts(species, "Unclassified"),
+      NA_character_,
+      species
+    )
+  ) %>% 
+
+  # --- Final step: Standardize placeholder taxon names ---
+  dplyr::mutate(
+    species = species %>%
+      # replace "oral taxon ..." pattern
+      stringr::str_replace("oral taxon (\\d+)", "HMT-\\1")
+  )
+
+print("--- Step 2.3: Final cleaned Nanopore data ---")
+head(nanopore_processed)
+```
+```{r}
+# --- 1.3 Manual Taxonomic Harmonization ---
+# This step corrects taxonomic inconsistencies between the two pipelines
+# (e.g., due to QIIME2 using HOMD taxonomy vs. wf-16s using NCBI taxonomy).
+
+# 1. Define the correction map
+# Here, we define the rules for harmonization.
+tax_correction_map <- tibble::tribble(
+  ~condition_column, ~condition_value, ~target_column, ~correct_value,
+  # Rule 1: If genus is 'Campylobacter', ensure its phylum is 'Campylobacterota'
+  "genus", "Campylobacter", "phylum", "Campylobacterota",
+  
+  # Rule 2: (Example) If genus is 'Porphyromonas', ensure its family is 'Porphyromonadaceae'
+  # "genus", "Porphyromonas", "family", "Porphyromonadaceae",
+  
+  # ... Add more rules here as you find them ...
+  # "species", "fur", "species", "fur (HMT-488)",
+)
+
+print("--- Applying manual taxonomic corrections ---")
+print(tax_correction_map)
+
+# 2. Apply the corrections to both datasets using a loop
+for(i in 1:nrow(tax_correction_map)) {
+  rule <- tax_correction_map[i, ]
+  
+  # Apply correction to Illumina data
+  illumina_processed <- illumina_processed %>%
+    dplyr::mutate(
+      # The !!sym() syntax allows us to use the text from our map as column names
+      !!rule$target_column := dplyr::if_else(
+        # Condition: If the condition column contains the specified value...
+        !is.na(!!rlang::sym(rule$condition_column)) & !!rlang::sym(rule$condition_column) == rule$condition_value,
+        # If TRUE: Apply the correction
+        rule$correct_value,
+        # If FALSE: Keep the original value
+        !!rlang::sym(rule$target_column)
+      )
+    )
+  
+  # Apply the same correction to Nanopore data
+  nanopore_processed <- nanopore_processed %>%
+    dplyr::mutate(
+      !!rule$target_column := dplyr::if_else(
+        !is.na(!!rlang::sym(rule$condition_column)) & !!rlang::sym(rule$condition_column) == rule$condition_value,
+        rule$correct_value,
+        !!rlang::sym(rule$target_column)
+      )
+    )
+}
+
+# --- Verify one of the changes ---
+print("--- Verification of 'Campylobacter' correction in Illumina data ---")
+illumina_processed %>% 
+  dplyr::filter(genus == "Campylobacter") %>%
+  dplyr::select(phylum, genus) %>%
+  head()
+```
+
+```{r}
+# --- 1.4 Advanced Taxonomic Harmonization (Full Lineage Correction) ---
+
+# 1. Define the full lineage correction map
+# Here, we define rules to replace an entire taxonomic line.
+# The key to identify the row to be changed is the original, problematic 'species' name.
+lineage_correction_map <- tibble::tribble(
+  ~species_original,         ~phylum_new,     ~class_new,        ~order_new,          ~family_new,        ~genus_new,      ~species_new,
+  # --- Rules for TM7/Saccharibacteria taxa ---
+  "TM7 phylum sp. HMT-352", "Patescibacteria", "Saccharimonadia", "Saccharimonadales", "Nanosynbacteraceae", "Nanosynbacter", "sp. HMT-352",
+  "TM7 phylum sp. HMT-346", "Patescibacteria", "Saccharimonadia", "Saccharimonadales", "Saccharimonadaceae", "Saccharimonas", "sp. HMT-346",
+  "TM7 phylum sp. HMT-347", "Patescibacteria", "Saccharimonadia", "Saccharimonadales", "Saccharimonadaceae", "Saccharimonas", "sp. HMT-347",
+  "TM7 phylum sp. HMT-349", "Patescibacteria", "Saccharimonadia", "Saccharimonadales", "Saccharimonadaceae", "Saccharimonas", "sp. HMT-349",
+  "TM7 phylum sp. HMT-351", "Patescibacteria", "Saccharimonadia", "Saccharimonadales", "Nanosyncoccaceae", "Nanosyncoccus", "sp. HMT-351",
+   "TM7 phylum sp. HMT-348", "Patescibacteria", "Saccharimonadia", "Saccharimonadales", "Parvisynbacteraceae", "Parvisynbacter", "sp. HMT-348",
+   "TM7 bacterium human oral taxon HOT-869", "Patescibacteria", "Saccharimonadia", "Saccharimonadales", "Saccharimonadaceae", "Saccharimonas", "sp. HMT-869",
+  
+  # below were reffered by searching qiime.taxonomy etc.  
+  # "Candidatus Saccharibacteria bacterium HMT-488", "Patescibacteria", "Saccharimonadia", "Saccharimonadales", "Nanosynbacteraceae", "Nanosynbacter", "fur (HMT-488)",
+"TM7 phylum sp. HMT-356", "Patescibacteria", "Saccharimonadia", "Saccharimonadales", "Nanoperiomorbaceae", "Nanoperiomorbus", "periodonticus",
+)
+
+print("--- Applying full lineage taxonomic corrections ---")
+
+# 2. Apply the corrections to the Nanopore data using a join
+nanopore_processed <- nanopore_processed %>%
+  # Join the correction map to the main data.
+  # The join key is the original species name.
+  dplyr::left_join(lineage_correction_map, by = c("species" = "species_original")) %>%
+  
+  # Update the original columns using the new "_new" columns.
+  # coalesce() is perfect for this: it takes the first non-NA value.
+  # If a correction exists (e.g., phylum_new is not NA), its value is used.
+  # Otherwise (if phylum_new is NA), the original `phylum` value is kept.
+  dplyr::mutate(
+    phylum  = coalesce(phylum_new, phylum),
+    class   = coalesce(class_new, class),
+    order   = coalesce(order_new, order),
+    family  = coalesce(family_new, family),
+    genus   = coalesce(genus_new, genus),
+    species = coalesce(species_new, species)
+  ) %>%
+  
+  # Remove the temporary "_new" columns, which are no longer needed
+  dplyr::select(-ends_with("_new"))
+
+# (Optional) Apply the same logic to Illumina data if needed, to ensure consistency
+# illumina_processed <- illumina_processed %>%
+
+# --- Verify one of the changes ---
+print("--- Verification of TM7 lineage correction in Nanopore data ---")
+nanopore_processed %>% 
+  dplyr::filter(stringr::str_detect(species, "HMT-352")) %>%
+  dplyr::select(phylum, class, order, family, genus, species)
+```
+
+```{r}
+# --- 1.5 Save Processed Data Objects ---
+
+# Create a directory to store processed data if it doesn't exist
+if (!dir.exists("processed_data")) {
+  dir.create("processed_data")
+}
+
+# Save the final, cleaned data frames as RDS files
+saveRDS(illumina_processed, file = "processed_data/illumina_processed.rds")
+saveRDS(nanopore_processed, file = "processed_data/nanopore_processed.rds")
+
+print("Processed data files have been saved to the 'processed_data' folder.")
+```
+
+

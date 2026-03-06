@@ -1,0 +1,241 @@
+# Constructed from biom file
+#OTU ID	1749	1750	1751	1752	1754
+k__Bacteria;p__Pseudomonadota;c__Betaproteobacteria;o__Neisseriales;f__Neisseriaceae;g__Neisseria;__	0.015121283991517022	0.06330974529114083	0.20735635290672794	0.29789295579111774	0.20413669064748202
+k__Bacteria;p__Pseudomonadota;c__Betaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Lautropia;s__mirabilis	0.1563201947571183	0.036967431703168636	0.009110975966844606	0.010441221131180494	0.01837264365722612
+k__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pasteurellales;f__Pasteurellaceae;g__Haemophilus;s__parainfluenzae	0.021107053671146583	0.00761186821493816	0.04730049327657274	0.1428943296360034	0.10345141608232401
+k__Bacteria;p__Fusobacteriota;c__Fusobacteriia;o__Fusobacteriales;f__Fusobacteriaceae;g__Fusobacterium;__	0.005145001192134423	0.0040526636289188	0.04843795751965223	0.04413657464316187	0.05441216646935616
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Porphyromonadaceae;g__Porphyromonas;s__pasteri	0.0007027318701451895	0.03458412951725007	0.044563821879856746	0.14614817278630204	0.10241553592568983
+k__Bacteria;p__Bacillota;c__Bacilli;o__Lactobacillales;f__Streptococcaceae;g__Streptococcus;s__sanguinis	0.05767420848548733	0.05747222980492619	0.0025001689303331305	0.011467989414163618	0.011360531827702395
+k__Bacteria;p__Pseudomonadota;c__Betaproteobacteria;o__Neisseriales;f__Neisseriaceae;g__Kingella;__	0.0	0.09642399680826491	0.0	0.011222143487252166	0.00045533193698205993
+k__Bacteria;p__Bacillota;c__Negativicutes;o__Veillonellales;f__Veillonellaceae;g__Veillonella;s__parvula	0.13355670167777234	0.0036851941288873024	0.0035925850845777868	0.006579993926159453	0.0042232037155086055
+k__Bacteria;p__Bacillota;c__Bacilli;o__Lactobacillales;f__Streptococcaceae;g__Streptococcus;__	0.023014468747254952	0.011213069315246835	0.08226907223461044	0.03227812405096241	0.05202167380020035
+k__Bacteria;p__Pseudomonadota;c__Epsilonproteobacteria;o__Campylobacterales;f__Campylobacteraceae;g__Campylobacter;s__showae	0.0010917441554041335	0.0794679041639544	0.0005968871770615132	0.0059581483463246035	0.005498133139058374
+k__Bacteria;p__Bacteroidota;c__Flavobacteriia;o__Flavobacteriales;f__Flavobacteriaceae;g__Capnocytophaga;s__gingivalis	0.01061627075255054	0.045303739789597466	0.004538594950109241	0.0029646126480498635	0.009630270467170568
+k__Bacteria;p__Actinomycetota;c__Actinomycetes;o__Micrococcales;f__Micrococcaceae;g__Rothia;s__mucilaginosa	0.00042665863544529356	6.299477143397098e-05	0.02952902223123184	0.03793258036992581	0.010927966487569439
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Prevotellaceae;g__Prevotella;s__melaninogenica	0.020918821920214836	0.0012178989143901055	0.05819086875239318	0.009891683176907837	0.005759949002823058
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Prevotellaceae;g__Hoylesella;s__shahii	0.0	0.0	0.0	0.004772303287104658	0.06502140060103816
+k__Bacteria;p__Fusobacteriota;c__Fusobacteriia;o__Fusobacteriales;f__Fusobacteriaceae;g__Fusobacterium;s__polymorphum	0.006575562499215701	0.09827184343699473	0.0	0.012581526847821371	0.005703032510700301
+k__Bacteria;p__Bacteroidota;c__Flavobacteriia;o__Flavobacteriales;f__Weeksellaceae;g__Riemerella;s__sp. HMT-322	0.0024219151953218136	0.04516725111815719	0.001756875464558416	0.006247378848573371	0.004211820417084055
+k__Bacteria;p__Patescibacteria;c__Saccharimonadia;o__Saccharimonadales;f__Nanosynbacteraceae;g__Nanosynbacter;s__sp. HMT-352	0.0038148301522167426	0.0	0.04913620289659211	0.003514150602322521	0.009926236226208906
+k__Bacteria;p__Bacteroidota;c__Flavobacteriia;o__Flavobacteriales;f__Flavobacteriaceae;g__Capnocytophaga;s__leadbetteri	0.0006274391697724906	0.0638871973626189	0.0023199765749938057	0.03460642959406499	0.007820326017666879
+k__Bacteria;p__Actinomycetota;c__Actinomycetes;o__Micrococcales;f__Micrococcaceae;g__Rothia;s__aeria	0.061401197153935924	0.0010394137286605211	0.0029393877964727345	0.0007519993058467946	0.00029596575903833894
+k__Bacteria;p__Actinomycetota;c__Actinomycetes;o__Actinomycetales;f__Actinomycetaceae;g__Actinomyces;s__naeslundii	0.07367390731468584	0.00942821745795099	0.0006757213325224677	0.0	0.0005463983243784719
+k__Bacteria;p__Bacillota;c__Bacilli;o__Lactobacillales;f__Streptococcaceae;g__Streptococcus;s__gordonii	0.051537853405112376	0.001522373642987632	0.001497848953758137	0.0014750755614687124	0.0
+k__Bacteria;p__Bacillota;c__Clostridia;o__Lachnospirales;f__Lachnospiraceae;g__Oribacterium;s__sinus	0.00032626836828169507	0.0	0.02185958510710183	0.005625533268738521	0.02408705946635097
+k__Bacteria;p__Actinomycetota;c__Actinomycetes;o__Actinomycetales;f__Actinomycetaceae;g__Schaalia;__	0.04981867007993575	0.0004724607857547824	0.029056017298466113	0.0001446152511243836	0.006864128950004553
+k__Bacteria;p__Pseudomonadota;c__Betaproteobacteria;o__Neisseriales;f__Neisseriaceae;g__Neisseria;s__oralis	0.01328916161578135	0.00279276820023938	0.0022186183751154356	0.018481829093696223	0.014934887533011566
+k__Bacteria;p__Bacillota;c__Negativicutes;o__Veillonellales;f__Veillonellaceae;g__Veillonella;s__rogosae	0.0006274391697724906	0.0	0.04498051670157894	0.02102705751348537	0.033762863127219746
+k__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Cardiobacteriales;f__Cardiobacteriaceae;g__Cardiobacterium;s__hominis	0.01003902671635985	0.02863112361673981	0.00033786066626123384	0.0018510752143921097	0.008867589472725618
+k__Bacteria;p__Pseudomonadota;c__Epsilonproteobacteria;o__Campylobacterales;f__Campylobacteraceae;g__Campylobacter;s__concisus	0.0008784148376814868	0.0	0.02749059621145573	0.004251688383056877	0.010575084236408341
+k__Bacteria;p__Patescibacteria;c__Saccharimonadia;o__Saccharimonadales;f__Nanosynbacteraceae;g__Nanosynbacter;s__fur	0.00012548783395449812	0.045356235432459105	0.0	0.0004483072784855891	0.0005350150259539204
+k__Bacteria;p__Bacteroidota;c__Flavobacteriia;o__Flavobacteriales;f__Flavobacteriaceae;g__Capnocytophaga;s__sputigena	0.024884237473176977	0.010698612015202738	0.0027366713967159942	0.0018799982646169864	0.01891904198160459
+k__Bacteria;p__Bacillota;c__Bacilli;o__Lactobacillales;f__Carnobacteriaceae;g__Granulicatella;s__adiacens	0.009424136329982808	0.0011024085000944921	0.007309052413451359	0.011178758911914851	0.0028002914124396687
+k__Bacteria;p__Bacillota;c__Clostridia;o__Lachnospirales;f__Lachnospiraceae;g__Catonella;__	0.00013803661734994793	0.0	0.01567673491452125	0.0016919984381552878	0.010996266278116748
+k__Bacteria;p__Bacillota;c__Clostridia;o__Eubacteriales;f__Ruminococcaceae;g__Ruminococcaceae [G1];s__bacterium HMT-075	0.0	0.013354891544001848	0.0	0.003181535524736439	0.006955195337400966
+k__Bacteria;p__Pseudomonadota;c__Betaproteobacteria;o__Neisseriales;f__Neisseriaceae;g__Kingella;s__oralis	0.023717200617400142	0.0	0.0008446516656530847	0.0	0.0
+k__Bacteria;p__Actinomycetota;c__Actinomycetes;o__Actinomycetales;f__Actinomycetaceae;g__Actinomyces;s__oris	0.029376701928748007	0.0010184154715158643	0.00034912268846994164	0.0	0.0022311264912120935
+k__Bacteria;p__Actinomycetota;c__Actinomycetes;o__Actinomycetales;f__Actinomycetaceae;g__Actinomyces;__	0.02804653088883033	0.008336308086428827	0.0	0.0008676915067463015	0.0013659958109461798
+k__Bacteria;p__Bacillota;c__Clostridia;o__Lachnospirales;f__Lachnospiraceae;g__Lachnoanaerobaculum;__	0.00028862201809534563	0.00929172878651072	0.004538594950109241	0.002950151122937425	0.006522629997268008
+k__Bacteria;p__Pseudomonadota;c__Betaproteobacteria;o__Neisseriales;f__Neisseriaceae;g__Neisseria;s__elongata	0.0035513057009122963	0.009974172143712072	0.0005856251548528054	0.0013015372601194522	0.00684136235315545
+k__Bacteria;p__Bacillota;c__Bacilli;o__Caryophanales;f__Gemellaceae;g__Gemella;s__sanguinis	0.0003137195848862453	0.0	0.004932765727414015	0.009631375724883946	0.006921045442127311
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Prevotellaceae;g__Alloprevotella;s__sp. HMT-308	0.00012548783395449812	0.0	0.007849629479469334	0.004309534483506631	0.0068982788452782075
+k__Bacteria;p__Pseudomonadota;c__Betaproteobacteria;o__Neisseriales;f__Neisseriaceae;g__Eikenella;s__corrodens	0.005559111044184267	0.01306091594397665	0.00012388224429578574	0.0013449218354567674	0.002766141517166014
+k__Bacteria;p__Fusobacteriota;c__Fusobacteriia;o__Fusobacteriales;f__Fusobacteriaceae;g__Fusobacterium;s__vincentii	0.018057699306052277	0.0	0.0003265986440525261	0.0	0.0
+k__Bacteria;p__Bacillota;c__Clostridia;o__Lachnospirales;f__Lachnospiraceae;g__Moryella;s__sp. HMT-097	0.00013803661734994793	0.0	0.005146744149379463	0.0021258441915284385	0.009436754393953192
+k__Bacteria;p__Fusobacteriota;c__Fusobacteriia;o__Fusobacteriales;f__Fusobacteriaceae;g__Fusobacterium;s__pseudoperiodonticum	0.0	0.0	0.0031871522850643063	0.005495379542726576	0.0066250796830889715
+k__Bacteria;p__Bacillota;c__Bacilli;o__Lactobacillales;f__Streptococcaceae;g__Streptococcus;s__ilei	0.0	0.0	0.0025452170191679617	0.009486760473759563	0.00372233858482834
+k__Bacteria;p__Actinomycetota;c__Actinomycetes;o__Actinomycetales;f__Actinomycetaceae;g__Peptidiphaga;s__sp. HMT-183	0.008972380127746616	0.0035487054574470317	6.757213325224677e-05	1.4461525112438357e-05	0.0008423640834168109
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Prevotellaceae;g__Prevotella;s__pallens	0.00021332931772264678	0.00012598954286794197	0.016543910624591752	0.0029790741731623017	0.007342227483835716
+k__Bacteria;p__Bacillota;c__Bacilli;o__Caryophanales;f__Gemellaceae;g__Gemella;s__haemolysans	0.0005646952527952415	0.0	0.0018244475978106628	0.009399991323084932	0.0025726254439486385
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Prevotellaceae;g__Segatella;s__salivae	0.0009411587546587359	0.0	0.010890375475820438	0.00011569220089950686	0.0011497131408797013
+k__Bacteria;p__Patescibacteria;c__Saccharimonadia;o__Saccharimonadales;f__Saccharimonadaceae;g__Saccharimonas;s__sp. HMT-346	5.0195133581799244e-05	0.01040463641517754	0.0	0.00011569220089950686	0.0009903469629359803
+k__Bacteria;p__Bacillota;c__Negativicutes;o__Veillonellales;f__Veillonellaceae;g__Veillonella;__	0.0	0.00028347647145286943	0.005811203459693223	0.0017209214883801645	0.003961387851743921
+k__Bacteria;p__Bacillota;c__Bacilli;o__Lactobacillales;f__Streptococcaceae;g__Streptococcus;s__parasanguinis	0.00023842688451354641	0.0	0.012590940829335316	0.0	0.0
+k__Bacteria;p__Bacillota;c__Clostridia;o__Eubacteriales;f__Ruminococcaceae;g__Ruminococcaceae [G2];s__bacterium HMT-085	0.0	0.0007244398714906663	0.009178548100096853	0.00021692287668657537	0.0008309807849922594
+k__Bacteria;p__Fusobacteriota;c__Fusobacteriia;o__Fusobacteriales;f__Leptotrichiaceae;g__Pseudoleptotrichia;__	0.0064375258818657535	0.014908762572706465	0.000878437732279208	0.0025741514700140275	0.0035174392131864128
+k__Bacteria;p__Fusobacteriota;c__Fusobacteriia;o__Fusobacteriales;f__Leptotrichiaceae;g__Leptotrichia;s__buccalis	0.0	0.012441467358209269	0.0	0.0002892305022487672	0.0
+k__Bacteria;p__Actinomycetota;c__Actinomycetes;o__Actinomycetales;f__Actinomycetaceae;g__Actinomyces;s__gerencseriae	0.011130770871763982	0.0006194485857673813	0.0	0.0	0.0
+k__Bacteria;p__Actinomycetota;c__Actinomycetes;o__Actinomycetales;f__Actinomycetaceae;g__Actinomyces;s__timonensis	0.010817051286877738	0.0003779686286038259	0.0	0.0	0.00026181586376468444
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Prevotellaceae;g__Alloprevotella;s__tannerae	0.00012548783395449812	0.004472628771811939	0.005912561659571593	0.0019378443650667398	0.008537473818413624
+k__Bacteria;p__Bacillota;c__Clostridia;o__Peptostreptococcales;f__Filifactoraceae;g__Peptoanaerobacter;s__yurii	0.0007780245705178882	0.0003359721143145119	0.008896997544879158	0.0	0.0
+k__Bacteria;p__Actinomycetota;c__Actinomycetes;o__Mycobacteriales;f__Corynebacteriaceae;g__Corynebacterium;s__matruchotii	0.00013803661734994793	0.00999517040085673	0.0	0.00024584592691145207	0.0023221928786085057
+k__Bacteria;p__Bacillota;c__Negativicutes;o__Selenomonadales;f__Selenomonadaceae;g__Selenomonas;__	0.0	0.01298742204397035	0.0	2.8923050224876715e-05	0.0008082141881431564
+k__Bacteria;p__Bacillota;c__Clostridia;o__Lachnospirales;f__Lachnospiraceae;g__Oribacterium;s__parvum	0.0	0.0	0.0028830776854291956	0.0015184601368060276	0.004883435024132593
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Prevotellaceae;g__Prevotella;s__histicola	0.0	0.0	0.011374642430794873	0.0	0.0
+k__Bacteria;p__Bacillota;c__Bacilli;o__Lactobacillales;f__Streptococcaceae;g__Streptococcus;s__intermedius	0.008457880008533173	0.00028347647145286943	0.0002815505552176949	0.0004483072784855891	0.0
+k__Bacteria;p__Bacillota;c__Bacilli;o__Lactobacillales;f__Aerococcaceae;g__Abiotrophia;s__defectiva	0.0022211346609946167	0.005270562543308905	0.0002252404441741559	0.003065843323836932	0.0033922229305163466
+k__Bacteria;p__Fusobacteriota;c__Fusobacteriia;o__Fusobacteriales;f__Fusobacteriaceae;g__Fusobacterium;s__nucleatum_sensu_stricto	0.0	0.013575373244020746	0.0	0.002863381972262795	0.0
+k__Bacteria;p__Bacillota;c__Bacilli;o__Lactobacillales;f__Streptococcaceae;g__Lactococcus;s__lactis	0.0	0.0	0.0	0.0	0.007717876331845916
+k__Bacteria;p__Bacillota;c__Clostridia;o__Peptostreptococcales;f__Anaerovoracaceae;g__Anaerovoracaceae [G5];s__bacterium HMT-493	0.0	0.0	0.006013919859449963	0.0018510752143921097	0.0
+k__Bacteria;p__Bacillota;c__Negativicutes;o__Selenomonadales;f__Selenomonadaceae;g__Selenomonas;s__noxia	0.005195196325716222	0.006719442286290238	0.00010135819987837016	0.00018799982646169864	0.002902741098260632
+k__Bacteria;p__Bacillota;c__Clostridia;o__Lachnospirales;f__Lachnospiraceae;g__Lachnospiraceae [G3];s__bacterium HMT-100	0.0	0.012451966486781598	0.00019145437754803252	0.0038901502552459184	0.006659229578362626
+k__Bacteria;p__Bacillota;c__Clostridia;o__Peptostreptococcales;f__Peptostreptococcaceae;g__Peptostreptococcus;s__stomatis	8.784148376814868e-05	0.0	0.0032096763294817217	0.0009689221825333699	0.002879974501411529
+k__Bacteria;p__Bacillota;c__Erysipelotrichia;o__Erysipelotrichales;f__Erysipelotrichaceae;g__Solobacterium;s__moorei	0.0001129390505590483	3.149738571698549e-05	0.005878775592945469	0.0009399991323084932	0.0011155632456060468
+k__Bacteria;p__Actinomycetota;c__Actinomycetes;o__Actinomycetales;f__Actinomycetaceae;g__Schaalia;s__odontolytica	0.0	0.0	0.0028943397076379032	0.0015907677623682194	0.011565431199344322
+k__Bacteria;p__Pseudomonadota;c__Epsilonproteobacteria;o__Campylobacterales;f__Campylobacteraceae;g__Campylobacter;s__gracilis	0.008696306893046719	0.0018898431430191295	0.0	0.0005206149040477808	0.0008765139786904654
+k__Bacteria;p__Pseudomonadota;c__Betaproteobacteria;o__Neisseriales;f__Neisseriaceae;g__Kingella;s__denitrificans	0.0068139893837292475	0.0	0.0013401806428362277	0.0	0.0
+k__Bacteria;p__Bacillota;c__Clostridia;o__Peptostreptococcales;f__Filifactoraceae;g__Peptoanaerobacter;__	0.0	0.0	0.0041894722616393	0.0015618447121433427	0.0009220471723886713
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Tannerellaceae;g__Tannerella;s__serpentiformis	0.0	0.004934590428994394	0.00037164673288735725	0.0006218455798348494	0.0014684454967671433
+k__Bacteria;p__Fusobacteriota;c__Fusobacteriia;o__Fusobacteriales;f__Leptotrichiaceae;g__Leptotrichia;s__sp. HMT-417	0.0	0.0	0.006047705926076086	0.0	0.0
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Prevotellaceae;g__Hoylesella;s__loescheii	0.011745661258141023	0.007118409172038721	0.0004730049327657274	0.0008532299816338631	0.0012407795282761132
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Prevotellaceae;g__Alloprevotella;s__rava	0.00015058540074539773	0.0	0.008063607901434781	0.0001301537260119452	0.0
+k__Bacteria;p__Fusobacteriota;c__Fusobacteriia;o__Fusobacteriales;f__Leptotrichiaceae;g__Pseudoleptotrichia;s__sp. HMT-392	0.0	0.0026352812716544526	0.0	0.0	0.0028913577998360804
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Paludibacteraceae;g__Paludibacteraceae [G1];s__bacterium HMT-274	0.0	0.005176070386157949	0.00010135819987837016	0.0006507686300597261	0.0007740642928695019
+k__Bacteria;p__Bacillota;c__Clostridia;o__Peptostreptococcales;f__Anaerovoracaceae;g__Anaerovoracaceae [G1];s__sulci	0.00015058540074539773	0.0	0.003964231817465144	0.001171383534107507	0.0010358801566341864
+k__Bacteria;p__Pseudomonadota;c__Betaproteobacteria;o__Rhodocyclales;f__Rhodocyclaceae;g__Oryzomicrobium;s__terrae	0.0	0.004777103500409466	0.0	0.0001301537260119452	3.4149895273654495e-05
+k__Bacteria;p__Actinomycetota;c__Actinomycetes;o__Micrococcales;f__Micrococcaceae;g__Rothia;s__dentocariosa	0.0	0.0013753858429750331	0.0	0.0008098454062965481	0.003062107276204353
+k__Bacteria;p__Actinomycetota;c__Actinomycetes;o__Actinomycetales;f__Actinomycetaceae;g__Peptidiphaga;s__gingivicola	0.0008533172708905871	0.002215316128761313	0.0	0.0003759996529233973	0.0016961114652581733
+k__Bacteria;p__Actinomycetota;c__Actinomycetes;o__Actinomycetales;f__Actinomycetaceae;g__Actinomyces;s__massiliensis	0.0038022813688212928	0.001501375385842975	0.0	0.0	4.553319369820599e-05
+k__Bacteria;p__Bacillota;c__Negativicutes;o__Veillonellales;f__Veillonellaceae;g__Veillonella;s__atypica	0.0	0.0	0.00628420839245895	0.0006652301551721645	0.001992077224296512
+k__Bacteria;p__Bacillota;c__Clostridia;o__Tissierellales;f__Peptoniphilaceae;g__Parvimonas;__	0.00028862201809534563	0.0	0.0029281257742640268	0.0016775369130428495	0.00029596575903833894
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Prevotellaceae;g__Hoylesella;s__nanceiensis	0.00020078053432719698	0.0	0.006160326148163164	0.000766460830959233	0.0011041799471814954
+k__Bacteria;p__Fusobacteriota;c__Fusobacteriia;o__Fusobacteriales;f__Leptotrichiaceae;g__Pseudoleptotrichia;s__sp. HMT-215	0.0	0.0	0.007207694213572989	0.0009399991323084932	0.003289773244695383
+k__Bacteria;p__Bacillota;c__Bacilli;o__Caryophanales;f__Gemellaceae;g__Gemella;s__morbillorum	0.0015560491410357765	0.003884677571761544	0.00015766831092190915	0.0032827662005235074	0.0
+k__Bacteria;p__Bacillota;c__Negativicutes;o__Selenomonadales;f__Selenomonadaceae;g__Selenomonas;s__felix	0.0002258781011180966	0.0	0.003840349573169358	0.0001301537260119452	0.0015481285857390037
+k__Bacteria;p__Patescibacteria;c__Saccharimonadia;o__Saccharimonadales;f__Nanosyncoccaceae;g__Nanosyncoccus;s__sp. HMT-351	0.0	0.00048295991432711086	0.003457440818073293	0.0003470766026985206	0.0
+k__Bacteria;p__Bacillota;c__Clostridia;o__Lachnospirales;f__Lachnospiraceae;g__Oribacterium;s__asaccharolyticum	0.0	0.0	0.004448498772439579	0.0	0.0
+k__Bacteria;p__Bacteroidota;c__Flavobacteriia;o__Flavobacteriales;f__Flavobacteriaceae;g__Capnocytophaga;s__periodontitidis	0.002384268845135464	0.003874178443189215	4.504808883483118e-05	0.0	0.00014798287951916947
+k__Bacteria;p__Fusobacteriota;c__Fusobacteriia;o__Fusobacteriales;f__Fusobacteriaceae;g__Fusobacterium;s__animalis	0.012046832059631819	0.0009449215715095648	0.0	0.0003470766026985206	0.0
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Prevotellaceae;g__Alloprevotella;s__sp. HMT-413	0.0001129390505590483	0.0	0.0	0.004208303807719562	0.0014570621983425918
+k__Bacteria;p__Patescibacteria;c__Saccharimonadia;o__Saccharimonadales;f__Nanosynbacteraceae;g__Nanosynbacter;__	0.0003137195848862453	0.0020998257144656993	0.0	0.0008098454062965481	0.0
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Prevotellaceae;g__Prevotella;s__vespertina	0.0	0.0	0.003153366218438183	0.0	0.0
+k__Bacteria;p__Actinomycetota;c__Actinomycetes;o__Actinomycetales;f__Actinomycetaceae;g__Actinomyces;s__graevenitzii	0.00010039026716359849	0.0	0.0055409149266842355	0.0	0.00010244968582096348
+k__Bacteria;p__Actinomycetota;c__Actinomycetes;o__Actinomycetales;f__Actinomycetaceae;g__Actinomyces;s__sp. HMT-448	0.003400720300166899	0.0	0.0	0.0	0.0
+k__Bacteria;p__Bacillota;c__Clostridia;o__Lachnospirales;f__Lachnospiraceae;g__Oribacterium;s__sp. HMT-078	0.003124647065467003	7.349390000629948e-05	0.0	0.00010123067578706851	0.00011383298424551498
+k__Bacteria;p__Actinomycetota;c__Actinomycetes;o__Actinomycetales;f__Actinomycetaceae;g__Actinomyces;s__sp. HMT-896	0.0007780245705178882	0.002330806543056926	0.0	0.0	0.0
+k__Bacteria;p__Fusobacteriota;c__Fusobacteriia;o__Fusobacteriales;f__Leptotrichiaceae;g__Pseudoleptotrichia;s__sp. HMT-212	0.0007027318701451895	0.002183818743044327	0.0	0.0	0.0
+k__Bacteria;p__Bacillota;c__Bacilli;o__Lactobacillales;f__Lactobacillaceae;g__Lactobacillus;__	0.0	0.0	0.0	0.0	0.004075220835989437
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Prevotellaceae;g__Hoylesella;s__saccharolytica	0.00015058540074539773	0.0035802028431640175	0.0	0.00020246135157413702	0.000250432565340133
+k__Bacteria;p__Bacillota;c__Clostridia;o__Lachnospirales;f__Lachnospiraceae;g__Lachnospiraceae [G2];s__bacterium HMT-096	0.0	0.0	0.0028830776854291956	0.0	0.0
+k__Bacteria;p__Patescibacteria;c__Patescibacteria [C1];o__Absconditabacterales;f__Absconditicoccaceae;g__Absconditicoccaceae [G1];s__bacterium HMT-875	0.0	0.0	0.0028267675743856567	0.0	0.0
+k__Bacteria;p__Actinomycetota;c__Actinomycetes;o__Mycobacteriales;f__Corynebacteriaceae;g__Corynebacterium;s__durum	0.0004392074188407434	0.0016798605715725595	0.0	0.0007230762556219179	0.0030279573809306984
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Prevotellaceae;g__Prevotella;s__jejuni	0.0	0.0	0.004335878550352501	0.0	0.0
+k__Bacteria;p__Fusobacteriota;c__Fusobacteriia;o__Fusobacteriales;f__Leptotrichiaceae;g__Leptotrichia;s__hongkongensis	0.002798378697185308	0.0009869180857988787	0.00019145437754803252	0.0	0.0
+k__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pasteurellales;f__Pasteurellaceae;g__Haemophilus;s__paraphrohaemolyticus	0.0	0.0	0.0031083181296033516	0.0	0.0
+k__Bacteria;p__Patescibacteria;c__Saccharimonadia;o__Saccharimonadales;f__Nanogingivalaceae;g__Nanogingivalis;s__sp. HMT-399	0.0	0.0	0.002511430952541838	0.0	0.0
+k__Bacteria;p__Bacillota;c__Clostridia;o__Lachnospirales;f__Lachnospiraceae;g__Catonella;s__morbi	0.0	0.0029502551288243077	0.0011262022208707795	0.0	0.0
+k__Bacteria;p__Actinomycetota;c__Coriobacteriia;o__Coriobacteriales;f__Atopobiaceae;g__Lancefieldella;s__parvula	0.0006399879531679404	0.0	0.0022186183751154356	0.0001446152511243836	0.0007399143975958473
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Prevotellaceae;g__Prevotella;s__nigrescens	8.784148376814868e-05	0.0013753858429750331	7.883415546095457e-05	0.00023138440179901372	0.0007171478007467444
+k__Bacteria;p__Bacillota;c__Clostridia;o__Lachnospirales;f__Lachnospiraceae;g__Lachnoanaerobaculum;s__orale	0.00028862201809534563	0.0	0.001768137486767124	0.0	0.0005350150259539204
+k__Bacteria;p__Bacillota;c__Clostridia;o__Lachnospirales;f__Lachnospiraceae;g__Catonella;s__massiliensis	0.0	0.0	0.0021623082640718967	0.0	0.0
+k__Bacteria;p__Bacteroidota;c__Flavobacteriia;o__Flavobacteriales;f__Flavobacteriaceae;g__Capnocytophaga;s__ochracea	0.0	0.005186569514730278	0.0	0.0007375377807343562	0.0006602313086239869
+k__Bacteria;p__Patescibacteria;c__Saccharimonadia;o__Saccharimonadales;f__Saccharimonadaceae;g__Saccharimonas;s__sp. HMT-347	0.0	0.001627364928710917	0.0	0.00021692287668657537	0.00020489937164192695
+k__Bacteria;p__Bacillota;c__Negativicutes;o__Veillonellales;f__Veillonellaceae;g__Megasphaera;s__micronuciformis	0.000464304985631643	0.0	0.0029056017298466114	4.338457533731507e-05	0.000250432565340133
+k__Bacteria;p__Spirochaetota;c__Spirochaetia;o__Spirochaetales;f__Treponemataceae;g__Treponema;__	0.0	0.0	0.0	0.0004483072784855891	0.0018896275384755487
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Prevotellaceae;g__Prevotella;s__sp. HMT-396	0.0	0.0	0.0027817194855508254	0.0003470766026985206	0.0008765139786904654
+k__Bacteria;p__Bacillota;c__Clostridia;o__Lachnospirales;f__Lachnospiraceae;g__Butyrivibrio;s__sp. HMT-455	0.0	0.0	0.000608149199270221	0.00011569220089950686	0.0023108095801839543
+k__Bacteria;p__Bacillota;c__Clostridia;o__Eubacteriales;f__Peptococcaceae;g__Peptococcus;__	0.0	0.0006404468429120383	0.000878437732279208	0.0002747689771363288	0.0001252162826700665
+k__Bacteria;p__Actinomycetota;c__Actinomycetes;o__Propionibacteriales;f__Propionibacteriaceae;g__Arachnia;s__rubra	0.00198270777648107	0.0	6.757213325224677e-05	0.0	0.0
+k__Bacteria;p__Bacillota;c__Bacilli;o__Lactobacillales;f__Carnobacteriaceae;g__Granulicatella;s__elegans	0.00013803661734994793	0.0	0.001587945131427799	8.676915067463014e-05	5.691649212275749e-05
+k__Bacteria;p__Bacillota;c__Negativicutes;o__Veillonellales;f__Veillonellaceae;g__Veillonella;s__denticariosi	0.0020329029100628693	0.0	0.0	0.0	0.0
+k__Bacteria;p__Bacteroidota;c__Flavobacteriia;o__Flavobacteriales;f__Flavobacteriaceae;g__Capnocytophaga;s__granulosa	0.0	0.0025512882430758247	0.0	0.0008387684565214248	0.0
+k__Bacteria;p__Bacillota;c__Bacilli;o__Caryophanales;f__Bacillaceae;g__Bacillus;s__subtilis	0.0	0.00015748692858492746	0.0	0.0010267682829831234	0.0007512976960203989
+k__Bacteria;p__Bacillota;c__Clostridia;o__Peptostreptococcales;f__Filifactoraceae;g__Filifactor;s__alocis	0.0	0.0	0.0	0.0	0.0017074947636827246
+k__Bacteria;p__Bacillota;c__Clostridia;o__Peptostreptococcales;f__Anaerovoracaceae;g__Anaerovoracaceae [G2];s__bacterium HMT-091	0.0	0.0	0.0011937743541230264	0.0001446152511243836	0.0004780985338311629
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Prevotellaceae;g__Segatella;s__oris	0.002058000476853769	0.0	0.00015766831092190915	0.0	0.0
+k__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Cardiobacteriales;f__Cardiobacteriaceae;g__Cardiobacterium;s__valvarum	0.0	0.0013753858429750331	0.0	0.0	0.0
+k__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pasteurellales;f__Pasteurellaceae;g__Haemophilus;__	0.0	0.0	0.0018357096200193707	0.0	0.0001252162826700665
+k__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pasteurellales;f__Pasteurellaceae;g__Haemophilus;s__sputorum	5.0195133581799244e-05	0.0	0.0014415388427145978	0.0	0.0
+k__Bacteria;p__Spirochaetota;c__Spirochaetia;o__Spirochaetales;f__Treponemataceae;g__Treponema;s__vincentii	0.0	0.0011444050143838062	0.0	0.0001446152511243836	9.106638739641199e-05
+k__Bacteria;p__Fusobacteriota;c__Fusobacteriia;o__Fusobacteriales;f__Fusobacteriaceae;g__Fusobacterium;s__watanabei	0.0	0.0	0.0	0.001735383013492603	0.0
+k__Bacteria;p__Actinomycetota;c__Actinomycetes;o__Actinomycetales;f__Actinomycetaceae;g__Actinomyces;s__sp. HMT-414	0.00025097566790899625	0.0010394137286605211	0.0	0.0	0.0
+k__Bacteria;p__Actinomycetota;c__Actinomycetes;o__Actinomycetales;f__Actinomycetaceae;g__Schaalia;s__lingnae	0.0	0.0	0.002049688041984819	0.0	0.0013432292140970767
+k__Bacteria;p__Bacillota;c__Clostridia;o__Peptostreptococcales;f__Anaerovoracaceae;g__Gallibacter;s__brachus	0.00013803661734994793	0.0009239233143649077	0.0	0.00024584592691145207	0.0
+k__Bacteria;p__Patescibacteria;c__Saccharimonadia;o__Saccharimonadales;f__Parvisynbacteraceae;g__Parvisynbacter;s__sp. HMT-348	0.0	0.0012073997858177772	0.0	0.0	0.0
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Prevotellaceae;g__Hoylesella;s__sp. HMT-317	0.0	0.00043046427146546835	3.3786066626123385e-05	0.0005061533789353425	0.0008651306802659139
+k__Bacteria;p__Fusobacteriota;c__Fusobacteriia;o__Fusobacteriales;f__Leptotrichiaceae;g__Leptotrichia;s__sp. HMT-223	0.0012674271229404308	0.00046196165718245385	0.0	0.00011569220089950686	0.0
+k__Bacteria;p__Fusobacteriota;c__Fusobacteriia;o__Fusobacteriales;f__Leptotrichiaceae;g__Leptotrichia;s__sp. HMT-847	0.0	0.0011339058858114777	0.0	0.0	0.0
+k__Bacteria;p__Bacillota;c__Negativicutes;o__Veillonellales;f__Veillonellaceae;g__Dialister;s__invisus	0.00018823175093174717	0.0002939756000251979	4.504808883483118e-05	0.00024584592691145207	0.0003528822511610964
+k__Bacteria;p__Bacillota;c__Bacilli;o__Caryophanales;f__Gemellaceae;g__Gemella;__	0.0	0.0	0.001047368065409825	0.0011424604838826302	0.0
+k__Bacteria;p__Bacillota;c__Clostridia;o__Lachnospirales;f__Lachnospiraceae;g__Johnsonella;s__ignava	0.0	0.0006824433572013523	0.0	0.0	0.00030734905746289046
+k__Bacteria;p__Patescibacteria;c__Saccharimonadia;o__Saccharimonadales;f__Saccharimonadaceae;g__Saccharimonas;s__sp. HMT-349	0.0	0.0008084329000692943	0.0	0.0	0.0001252162826700665
+k__Bacteria;p__Spirochaetota;c__Spirochaetia;o__Spirochaetales;f__Treponemataceae;g__Treponema;s__socranskii	0.0	0.0010919093715221636	0.0	0.00010123067578706851	0.0004780985338311629
+k__Bacteria;p__Pseudomonadota;c__Betaproteobacteria;o__Neisseriales;f__Neisseriaceae;g__Neisseria;s__subflava	0.0	0.0	0.0009460098655314548	0.0	0.0
+k__Bacteria;p__Bacillota;c__Bacilli;o__Caryophanales;f__Staphylococcaceae;g__Staphylococcus;__	6.274391697724906e-05	7.349390000629948e-05	0.0	1.4461525112438357e-05	0.0008082141881431564
+k__Bacteria;p__Fusobacteriota;c__Fusobacteriia;o__Fusobacteriales;f__Leptotrichiaceae;g__Pseudoleptotrichia;s__goodfellowii	0.000928609971263286	0.0	0.0	0.00011569220089950686	0.0
+k__Bacteria;p__Bacillota;c__Clostridia;__;__;__;__	0.0	0.0005459546857610818	0.0	0.0003181535524736439	5.691649212275749e-05
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Prevotellaceae;g__Prevotella;s__aurantiaca	3.764635018634943e-05	0.0	0.000878437732279208	0.0	0.0
+k__Bacteria;p__Bacillota;c__Clostridia;o__Lachnospirales;f__Lachnospiraceae;g__Lachnospiraceae [G2];s__bacterium HMT-088	0.0009035124044723864	0.0	0.0	0.0	0.0
+k__Bacteria;p__Pseudomonadota;c__Betaproteobacteria;o__Neisseriales;f__Neisseriaceae;g__Neisseria;s__bacilliformis	0.001129390505590483	0.0	0.0	0.0	0.0
+k__Bacteria;p__Bacillota;c__Negativicutes;o__Selenomonadales;f__Selenomonadaceae;g__Selenomonas;s__timonae	0.0	0.0008819268000755938	0.0	0.0	0.0001252162826700665
+k__Bacteria;p__Patescibacteria;c__Saccharimonadia;o__Saccharimonadales;f__Nanoperiomorbaceae;g__Nanoperiomorbus;s__periodonticus	8.784148376814868e-05	0.00024147995716355543	0.0	8.676915067463014e-05	0.0004780985338311629
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Odoribacteraceae;g__Odoribacteraceae [G5];__	0.0	0.0	0.00014640628871320134	0.0	0.0008082141881431564
+k__Bacteria;p__Fusobacteriota;c__Fusobacteriia;o__Fusobacteriales;f__Leptotrichiaceae;g__Leptotrichia;s__sp. HMT-221	0.0	0.0	0.0007883415546095457	0.0	0.0
+k__Bacteria;p__Bacillota;c__Clostridia;o__Tissierellales;f__Peptoniphilaceae;g__Finegoldia;s__magna	0.0	0.0	0.0	0.0	0.0007285310991712959
+k__Bacteria;p__Bacillota;c__Clostridia;o__Lachnospirales;f__Lachnospiraceae;g__Lachnoanaerobaculum;s__saburreum	0.0012925246897313306	0.0	0.0	0.0	0.0
+k__Bacteria;p__Patescibacteria;c__Patescibacteria [C1];o__Absconditabacterales;f__Absconditicoccaceae;g__Absconditicoccaceae [G1];s__bacterium HMT-345	0.0	0.0004409634000377969	0.0	0.0001446152511243836	0.0001252162826700665
+k__Bacteria;p__Pseudomonadota;c__Epsilonproteobacteria;o__Campylobacterales;f__Campylobacteraceae;g__Campylobacter;s__sp. HMT-044	0.0	0.0	0.0006982453769398833	0.0	0.0
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Prevotellaceae;g__Segatella;s__maculosa	0.0	0.0004724607857547824	0.0	0.0001735383013492603	0.00027319916218923596
+k__Bacteria;p__Bacillota;c__Clostridia;o__Peptostreptococcales;f__Anaerovoracaceae;g__Mogibacterium;__	0.00012548783395449812	0.0	0.0002702885330089871	4.338457533731507e-05	0.00021628267006647847
+k__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pasteurellales;f__Pasteurellaceae;g__Haemophilus;s__parahaemolyticus	0.0	0.0	0.0006306732436876366	0.0	0.0
+k__Bacteria;p__Spirochaetota;c__Spirochaetia;o__Spirochaetales;f__Treponemataceae;g__Treponema;s__maltophilum	0.0	0.0005354555571887534	0.0	0.0	0.0
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Prevotellaceae;g__Segatella;s__oulorum	0.000464304985631643	0.00012598954286794197	0.0002252404441741559	0.0	0.0004439486385575084
+k__Bacteria;p__Bacillota;c__Negativicutes;o__Selenomonadales;f__Selenomonadaceae;g__Selenomonas;s__sputigena	0.00025097566790899625	0.0002939756000251979	0.0007658175101921301	0.0	0.0009220471723886713
+k__Bacteria;p__Fusobacteriota;c__Fusobacteriia;o__Fusobacteriales;f__Leptotrichiaceae;g__Pseudoleptotrichia;s__sp. HMT-219	0.0	0.0003149738571698549	0.0	0.0	0.00017074947636827248
+k__Bacteria;p__Bacillota;c__Bacilli;o__Lactobacillales;f__Streptococcaceae;g__Streptococcus;s__mutans	0.00013803661734994793	0.0	0.0	0.00023138440179901372	0.00019351607321737546
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Prevotellaceae;g__Segatella;s__sp. HMT-309	0.0	0.0	0.0004730049327657274	0.0	0.0
+k__Bacteria;p__Bacillota;c__Clostridia;o__Tissierellales;f__Peptoniphilaceae;g__Fenollaria;s__massiliensis	0.0	0.0	0.0	0.0	0.00045533193698205993
+k__Bacteria;p__Actinomycetota;c__Actinomycetes;o__Propionibacteriales;f__Propionibacteriaceae;g__Arachnia;s__propionica	0.00037646350186349434	0.0004094660143208114	0.0	0.0	0.0
+k__Bacteria;p__Bacillota;c__Bacilli;o__Lactobacillales;f__Streptococcaceae;g__Streptococcus;s__sp. HMT-056	0.000464304985631643	0.0	0.0	0.0	0.0
+k__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pasteurellales;f__Pasteurellaceae;g__Aggregatibacter;s__segnis	0.0	0.00022048170001889844	0.0	0.00023138440179901372	7.968308897186048e-05
+k__Bacteria;p__Patescibacteria;c__Patescibacteria [C1];o__Absconditabacterales;f__Absconditicoccaceae;g__Absconditicoccaceae [G1];s__bacterium HMT-874	0.0004517562022361932	0.0	0.0	0.0	0.0
+k__Bacteria;p__Fusobacteriota;c__Fusobacteriia;o__Fusobacteriales;f__Leptotrichiaceae;g__Leptotrichia;s__wadei	0.00042665863544529356	0.0	0.0	0.0	0.0
+k__Bacteria;p__Cyanobacteriota;c__Cyanophyceae;o__Oscillatoriales;f__Microcoleaceae;g__Arthrospira;s__platensis	6.274391697724906e-05	0.0	0.0003265986440525261	0.0	5.691649212275749e-05
+k__Bacteria;p__Bacillota;c__Clostridia;o__Tissierellales;f__Peptoniphilaceae;g__Anaerococcus;s__prevotii	0.0	0.0	0.0	0.0	0.0003870321464347509
+k__Bacteria;p__Actinomycetota;c__Actinomycetes;o__Actinomycetales;f__Actinomycetaceae;g__Schaalia;s__hongkongensis	0.0	0.0003359721143145119	0.0	0.0	0.0
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Prevotellaceae;g__Hoylesella;s__oralis	0.0	6.299477143397098e-05	0.0	7.23076255621918e-05	0.00022766596849102996
+k__Bacteria;p__Actinomycetota;c__Actinomycetes;o__Actinomycetales;f__Actinomycetaceae;g__Actinomyces;s__israelii	0.0	0.0003149738571698549	0.0	0.0	0.0
+k__Bacteria;p__Actinomycetota;c__Actinomycetes;o__Actinomycetales;f__Actinomycetaceae;g__Schaalia;s__georgiae	0.0	0.0003044747285975264	0.0	0.0	0.0
+k__Bacteria;p__Actinomycetota;c__Actinomycetes;o__Actinomycetales;f__Actinomycetaceae;g__Mobiluncus;s__mulieris	0.0	0.0	0.0003265986440525261	0.0	0.00014798287951916947
+k__Bacteria;p__Bacillota;c__Bacilli;o__Lactobacillales;f__Streptococcaceae;g__Streptococcus;s__sobrinus	0.000263524451304446	0.0	6.757213325224677e-05	0.0	0.0
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Prevotellaceae;g__Prevotella;s__denticola	0.0003137195848862453	0.0	2.252404441741559e-05	0.0	0.00022766596849102996
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Tannerellaceae;g__Tannerella;__	0.0	0.0	0.0	0.0	0.0002845824606137875
+k__Bacteria;p__Bacillota;c__Clostridia;o__Tissierellales;f__Peptoniphilaceae;g__Parvimonas;s__sp. HMT-110	0.0	0.00025197908573588394	0.0	0.0	0.0
+k__Bacteria;p__Pseudomonadota;c__Betaproteobacteria;o__Neisseriales;f__Neisseriaceae;g__Kingella;s__sp. HMT-932	0.0	0.0	0.0002590265108002793	0.0	0.0
+k__Bacteria;p__Bacillota;c__Clostridia;o__Lachnospirales;f__Lachnospiraceae;g__Stomatobaculum;s__longum	0.0	0.0	0.0002477644885915715	0.0	0.0
+k__Bacteria;p__Bacillota;c__Clostridia;o__Tissierellales;f__Peptoniphilaceae;g__Anaerococcus;__	0.0	0.0	0.0	0.0	0.00033011565431199344
+k__Bacteria;p__Actinomycetota;c__Actinomycetes;o__Mycobacteriales;f__Corynebacteriaceae;g__Corynebacterium;__	3.764635018634943e-05	0.0	0.0	0.0	0.00027319916218923596
+k__Bacteria;p__Bacillota;c__Negativicutes;o__Selenomonadales;f__Selenomonadaceae;g__Selenomonadaceae [G1];s__bacterium HMT-155	0.0	0.0	0.0	0.0	0.00023904926691558146
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Prevotellaceae;g__Hallella;s__sp. HMT-315	0.0	0.0	0.0002252404441741559	0.0	0.0
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Porphyromonadaceae;g__Porphyromonas;s__endodontalis	0.00010039026716359849	0.0	0.0002252404441741559	0.0	6.829979054730899e-05
+k__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pasteurellales;f__Pasteurellaceae;g__Aggregatibacter;s__aphrophilus	0.0	0.0	0.0002252404441741559	0.0	0.0
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Prevotellaceae;g__Segatella;s__sp. HMT-300	0.0	0.0	0.0	8.676915067463014e-05	0.00015936617794372096
+k__Bacteria;p__Bacillota;c__Negativicutes;o__Selenomonadales;f__Selenomonadaceae;g__Selenomonas;s__flueggei	0.0	0.0	0.0	0.0	0.00022766596849102996
+k__Bacteria;p__Bacillota;c__Clostridia;o__Lachnospirales;f__Lachnospiraceae;g__Shuttleworthia;s__satelles	0.00023842688451354641	0.0	0.0	7.23076255621918e-05	0.00019351607321737546
+k__Bacteria;p__Pseudomonadota;c__Betaproteobacteria;o__Burkholderiales;f__Comamonadaceae;g__Paenacidovorax;s__caeni	0.0	0.00019948344287424143	0.0	0.0	0.0
+k__Bacteria;p__Bacillota;c__Clostridia;o__Tissierellales;f__Peptoniphilaceae;g__Peptoniphilaceae [G2];s__bacterium HMT-790	0.0	0.0	0.0	0.0	0.00021628267006647847
+k__Bacteria;p__Synergistota;c__Synergistia;o__Synergistales;f__Synergistaceae;g__Fretibacterium;__	0.0	0.00018898431430191295	0.0	5.784610044975343e-05	0.0
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Prevotellaceae;g__Alloprevotella;s__sp. HMT-912	0.0	0.00018898431430191295	0.0	0.0	0.0
+k__Bacteria;p__Bacillota;c__Clostridia;o__Lachnospirales;f__Lachnospiraceae;g__Lachnospiraceae [G8];s__bacterium HMT-500	0.0	6.299477143397098e-05	0.00012388224429578574	0.00010123067578706851	0.0
+k__Bacteria;p__Actinomycetota;c__Actinomycetes;o__Actinomycetales;f__Actinomycetaceae;g__Actinomyces;s__sp. HMT-897	0.0	0.00017848518572958445	0.0	0.0	0.0
+k__Bacteria;p__Bacillota;c__Bacilli;o__Lactobacillales;f__Streptococcaceae;g__Streptococcus;s__anginosus	0.0	0.0	0.0	0.0	0.00017074947636827248
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Prevotellaceae;g__Alloprevotella;s__sp. HMT-914	0.00017568296753629737	0.0	0.0	0.0	0.00011383298424551498
+k__Bacteria;p__Bacillota;c__Clostridia;o__Tissierellales;f__Peptoniphilaceae;g__Urinicoccus;s__timonensis	0.0	0.0	0.0	0.0	0.00015936617794372096
+k__Bacteria;p__Bacillota;c__Clostridia;o__Tissierellales;f__Peptoniphilaceae;__;__	0.0	0.0	0.0	0.0	0.00014798287951916947
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Prevotellaceae;g__Hoylesella;s__enoeca	0.0	0.0	0.0	0.00011569220089950686	4.553319369820599e-05
+k__Bacteria;p__Bacillota;c__Bacilli;o__Lactobacillales;f__Aerococcaceae;g__Abiotrophia;s__sp. HMT-427	0.0	0.0	0.0	0.0	0.00013659958109461798
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Prevotellaceae;g__Prevotella;__	0.00013803661734994793	0.0	0.0	0.0	5.691649212275749e-05
+k__Bacteria;p__Bacillota;c__Clostridia;o__Tissierellales;f__Peptoniphilaceae;g__Anaerococcus;s__octavius	0.0	0.0	0.0	0.0	0.0001252162826700665
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Tannerellaceae;g__Tannerella;s__forsythia	0.0	0.0	0.0	0.0001301537260119452	0.0
+k__Bacteria;p__Bacillota;c__Clostridia;o__Tissierellales;f__Peptoniphilaceae;g__Peptoniphilus;s__lacrimalis	0.0	0.0	0.0	0.0	0.00010244968582096348
+k__Bacteria;p__Patescibacteria;c__Patescibacteria [C1];o__Patescibacteria [C1 O1];f__Patescibacteria [C1 O1 F1];g__Patescibacteria [C1 O1 F1 G2];s__bacterium HMT-873	2.5097566790899622e-05	0.0	6.757213325224677e-05	0.0	0.0
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Prevotellaceae;g__Segatella;s__sp. HMT-305	0.0	0.0	9.009617766966236e-05	0.0	0.0
+k__Bacteria;p__Bacteroidota;c__Flavobacteriia;o__Flavobacteriales;f__Weeksellaceae;g__Weeksellaceae [G1];s__bacterium HMT-931	0.0	0.0	9.009617766966236e-05	0.0	0.0
+k__Bacteria;p__Bacillota;c__Negativicutes;o__Selenomonadales;f__Selenomonadaceae;g__Selenomonas;s__dianae	0.0	0.0	0.0	0.0	9.106638739641199e-05
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Prevotellaceae;g__Hoylesella;s__marshii	0.0	0.0	0.0	0.0	9.106638739641199e-05
+k__Bacteria;p__Actinomycetota;c__Actinomycetes;o__Propionibacteriales;f__Propionibacteriaceae;g__Cutibacterium;s__acnes	8.784148376814868e-05	0.0	0.0	0.0	3.4149895273654495e-05
+k__Bacteria;p__Actinomycetota;c__Coriobacteriia;o__Coriobacteriales;f__Atopobiaceae;g__Olsenella;s__sp. HMT-807	0.0	7.349390000629948e-05	0.0	0.0	0.0
+k__Bacteria;__;__;__;__;__;__	0.0	0.0	7.883415546095457e-05	4.338457533731507e-05	4.553319369820599e-05
+k__Bacteria;p__Bacillota;c__Clostridia;o__Peptostreptococcales;f__Anaerovoracaceae;g__Anaerovoracaceae [G1];s__infirmum	0.0	6.299477143397098e-05	0.0	0.0	0.0
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Prevotellaceae;__;__	0.0	5.2495642861642484e-05	0.0	0.0	0.0
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Porphyromonadaceae;g__Porphyromonas;s__uenonis	0.0	0.0	0.0	0.0	5.691649212275749e-05
+k__Bacteria;p__Bacillota;c__Negativicutes;o__Veillonellales;f__Veillonellaceae;g__Dialister;s__sp. HMT-119	0.0	0.0	0.0	0.0	5.691649212275749e-05
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Prevotellaceae;g__Hallella;s__dentalis	0.0	0.0	0.0	0.0	5.691649212275749e-05
+k__Bacteria;p__Bacillota;c__Negativicutes;o__Veillonellales;f__Veillonellaceae;g__Dialister;s__pneumosintes	0.0	0.0	4.504808883483118e-05	0.0	0.0
+k__Bacteria;p__Bacillota;c__Negativicutes;o__Selenomonadales;f__Selenomonadaceae;g__Selenomonas;s__sp. HMT-920	3.764635018634943e-05	0.0	0.0	0.0	0.0
+k__Bacteria;p__Pseudomonadota;c__Betaproteobacteria;o__Burkholderiales;f__Comamonadaceae;g__Ottowia;s__sp. HMT-894	0.0	0.0	3.3786066626123385e-05	0.0	0.0
+k__Bacteria;p__Bacillota;c__Negativicutes;o__Veillonellales;f__Veillonellaceae;g__Veillonella;s__tobetsuensis	0.0	0.0	2.252404441741559e-05	4.338457533731507e-05	0.0
+k__Bacteria;p__Pseudomonadota;c__Betaproteobacteria;o__Neisseriales;f__Neisseriaceae;g__Neisseria;s__macacae	0.0	0.0	0.0	0.0	3.4149895273654495e-05
+k__Bacteria;p__Fusobacteriota;c__Fusobacteriia;o__Fusobacteriales;f__Leptotrichiaceae;g__Leptotrichia;s__sp. HMT-463	0.0	0.0	2.252404441741559e-05	0.0	0.0
+k__Bacteria;p__Bacillota;c__Clostridia;o__Eubacteriales;f__Peptococcaceae;g__Peptococcus;s__sp. HMT-168	0.0	0.0	0.0	0.0	2.2766596849102996e-05
+k__Bacteria;p__Bacteroidota;c__Bacteroidia;o__Bacteroidales;f__Prevotellaceae;g__Alloprevotella;__	0.0	0.0	0.0	0.0	1.1383298424551498e-05

@@ -1,0 +1,212 @@
+---
+title: "Taxonomic assignment rate"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+# --- 2.1 Load Processed Data ---
+
+# Load the necessary libraries
+library(tidyverse)
+
+# 2.1.1 Load the cleaned data objects saved from the previous script
+illumina_processed <- readRDS(file = "processed_data/illumina_processed.rds")
+nanopore_processed <- readRDS(file = "processed_data/nanopore_processed.rds")
+
+print("Cleaned data loaded successfully.")
+
+# --- 2.1.2 Data Transformation for Readability ---
+# Create a "Genus species" format in the species column, with an exception for TM7 taxa.
+
+# --- For Illumina data (no change) ---
+illumina_processed <- illumina_processed %>%
+  dplyr::mutate(
+    species = dplyr::if_else(
+      !is.na(genus) & !is.na(species),
+      stringr::str_c(genus, species, sep = " "),
+      species
+    )
+  )
+
+# --- For Nanopore data (with TM7 exception) ---
+nanopore_processed <- nanopore_processed %>%
+  dplyr::mutate(
+    species = dplyr::if_else(
+      # Condition to combine:
+      # 1. Both genus and species are available (not NA)
+      # 2. AND the species column does NOT contain the string "TM7"
+      !is.na(genus) & !is.na(species) & !stringr::str_starts(species, "TM7"),
+      
+      # If TRUE, combine them with a space
+      stringr::str_c(genus, species, sep = " "),
+      
+      # If FALSE (if it's TM7 or if species/genus is NA), keep the original species value
+      species 
+    )
+  )
+
+# --- Verify the change ---
+print("--- Head of Illumina data with updated species format ---")
+illumina_processed %>% dplyr::select(genus, species) %>% head()
+
+print("--- Head of Nanopore data with updated species format ---")
+nanopore_processed %>% dplyr::select(genus, species) %>% head()
+
+# You can also specifically check a TM7-related taxon to confirm it was NOT changed
+print("--- Verification of TM7 exception ---")
+nanopore_processed %>% 
+  dplyr::filter(stringr::str_detect(species, "TM7")) %>% 
+  dplyr::select(genus, species)
+```
+
+```{r}
+# ---- 2.2 Compare taxonomic assignment rates ----
+# 2.2.1 Define calculation function
+#' Calculate Taxonomic Assignment Rates
+#'
+#' This function takes a processed abundance table and calculates the assignment rate
+#' (i.e., the percentage of total abundance that is not NA) for each taxonomic level.
+#'
+#' @param processed_df A processed data frame (e.g., illumina_final or nanopore_final).
+#' @param sequencer_name A string to label the data source (e.g., "Illumina").
+#' @return A data frame with assignment rates for each sample and taxonomic level.
+
+calculate_assignment_rates <- function(processed_df, sequencer_name) {
+  
+  taxa_levels <- c("kingdom", "phylum", "class", "order", "family", "genus", "species")
+  
+  # Convert to long format
+  long_data <- processed_df %>%
+    tidyr::pivot_longer(
+      cols = where(is.numeric),
+      names_to = "Sample",
+      values_to = "Abundance"
+    )
+
+  # Calculate assignment rates for each level
+  assignment_rates <- purrr::map_dfr(taxa_levels, function(level) {
+    long_data %>%
+      dplyr::group_by(Sample) %>%
+      dplyr::summarise(
+        Assignment_Rate_Percent = sum(Abundance[!is.na(!!rlang::sym(level))]),
+        .groups = 'drop'
+      ) %>%
+      dplyr::mutate(Taxonomic_Level = level)
+  }) %>%
+    # Add a column to identify the sequencer
+    dplyr::mutate(Sequencer = sequencer_name)
+  
+  return(assignment_rates)
+}
+```
+
+```{r}
+# 2.2.2 Apply function and combine
+# Calculate rates for Illumina data
+illumina_rates <- calculate_assignment_rates(illumina_processed, "Illumina")
+
+# Calculate rates for Nanopore data
+nanopore_rates <- calculate_assignment_rates(nanopore_processed, "ONT")
+
+# Combine the two results into a single data frame
+combined_rates <- dplyr::bind_rows(illumina_rates, nanopore_rates)
+
+# --- View the combined results for each sample ---
+print("--- Combined assignment rates for each sample ---")
+print(combined_rates)
+```
+```{r}
+# 2.2.3 Summarize for plotting
+
+# Define the order for the plot
+taxa_levels <- c("kingdom", "phylum", "class", "order", "family", "genus", "species")
+
+# Calculate mean and SD, grouping by both Taxonomic_Level and Sequencer
+final_summary_table <- combined_rates %>%
+  dplyr::group_by(Sequencer, Taxonomic_Level) %>%
+  dplyr::summarise(
+    Mean_Assignment_Rate = mean(Assignment_Rate_Percent),
+    SD_Assignment_Rate = sd(Assignment_Rate_Percent),
+    .groups = 'drop'
+  ) %>%
+  # Use factor to ensure the correct order in the plot
+  dplyr::mutate(Taxonomic_Level = factor(Taxonomic_Level, levels = taxa_levels)) %>%
+  dplyr::arrange(Taxonomic_Level)
+
+# --- View the final summary table ---
+print("--- Final summary table with mean and SD by sequencer ---")
+print(final_summary_table)
+```
+```{r}
+# 2.2.4 Visualize the comparison (B&W with Individual Data Points) 
+
+# This plot uses TWO data frames:
+# - final_summary_table: for the summary bars and error bars
+# - combined_rates: for the individual data points
+
+assignment_rate_plot <- final_summary_table %>%
+  ggplot(aes(x = Taxonomic_Level, y = Mean_Assignment_Rate, fill = Sequencer)) +
+  
+  # 1. Bar chart for the mean (semi-transparent)
+  geom_bar(stat = "identity", position = position_dodge(), color = "black", alpha = 0.6) +
+  
+  # 2. Error bars for standard deviation
+  geom_errorbar(
+    aes(ymin = Mean_Assignment_Rate - SD_Assignment_Rate, ymax = Mean_Assignment_Rate + SD_Assignment_Rate),
+    width = 0.25,
+    position = position_dodge(0.9)
+  ) +
+
+ # --- 3. Jittered points (NEW, CORRECTED VERSION) ---
+  geom_jitter(
+    data = combined_rates,
+    # Use 'color = Sequencer' to provide the grouping for position_jitterdodge
+    aes(y = Assignment_Rate_Percent, color = Sequencer), 
+    position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.9),
+    size = 2.0,
+    shape = 21,
+    fill = "white" # The fill remains white
+    # We remove the static 'color = "black"' here because it's now mapped in aes()
+  ) +
+  # Add a manual color scale to force the outline of BOTH groups to be black
+  scale_color_manual(
+    values = c("Illumina" = "black", "ONT" = "black"),
+    # Hide this redundant legend
+    guide = "none" 
+ ) +  
+
+  # (The rest of the theme and labels are the same)
+  scale_fill_grey(start = 0.5, end = 0.8) +
+  labs(
+    # title = "Comparison of Taxonomic Assignment Rates",
+    # subtitle = "Illumina vs. ONT",
+    x = "Taxonomic level",
+    y = "Assignment rate (%)" # Renamed for clarity
+  ) +
+  theme_classic(base_size = 14) +
+  theme(
+    axis.text = element_text(size = 12),
+    axis.title = element_text(size = 16),
+    legend.text = element_text(size = 12),
+    legend.title = element_text(size = 14),
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+ggsave(
+  filename = "figures/fig3_assignment_rate_comparison.png", # File path and name
+  plot = assignment_rate_plot,                                # The plot object to save
+  width = 7,                                                 # Width of the plot in inches
+  height = 5,                                                # Height of the plot in inches
+  dpi = 300                                                  # Resolution for publication quality
+)
+
+# Finally, display the plot in your R Markdown output
+print(assignment_rate_plot)
+```
+

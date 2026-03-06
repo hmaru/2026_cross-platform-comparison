@@ -1,0 +1,133 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+# --- 2.3 Compare Alpha Diversity
+
+# (This step should be done using the UNFILTERED processed data)
+
+# Install and load the vegan package if you haven't already
+# install.packages("vegan")
+library(vegan)
+
+# --- Prepare data for vegan ---
+# The vegan package requires a data frame where ROWS are samples and COLUMNS are species.
+# So, we need to transpose our data.
+
+# Function to prepare a data frame for vegan
+prepare_for_vegan <- function(df) {
+  df %>%
+    # Use species as the unique identifier. Remove rows with NA species.
+    dplyr::filter(!is.na(species)) %>%
+    # If multiple rows have the same species name, sum them up
+    dplyr::group_by(species) %>%
+    dplyr::summarise(dplyr::across(where(is.numeric), sum), .groups = 'drop') %>%
+    # Set species as row names
+    tibble::column_to_rownames("species") %>%
+    # Transpose the data frame so samples are rows
+    t()
+}
+
+illumina_for_vegan <- prepare_for_vegan(illumina_processed) # Using relative abundance
+nanopore_for_vegan <- prepare_for_vegan(nanopore_processed) # Using counts before normalization *
+# *Note: For simplicity here, we use the normalized data. For perfect accuracy with richness,
+# you would start from the raw count data before the percentage conversion.
+
+# --- 2.3.2 Calculate Shannon Diversity per sample ---
+# --- Calculate Shannon Diversity ---
+shannon_illumina <- diversity(illumina_for_vegan, index = "shannon")
+shannon_nanopore <- diversity(nanopore_for_vegan, index = "shannon")
+
+# --- Combine results into a tidy table ---
+alpha_diversity_summary <- tibble(
+  Sample = c(names(shannon_illumina), names(shannon_nanopore)),
+  Sequencer = c(rep("Illumina", 4), rep("ONT", 4)),
+  Shannon = c(shannon_illumina, shannon_nanopore)
+)
+
+print("--- Alpha Diversity (Shannon Index) ---")
+print(alpha_diversity_summary)
+
+# --- 2.3.3 Calculate Mean and SD of Shannon Diversity ---
+# Group by sequencer and then calculate the mean and sd.
+alpha_diversity_final_summary <- alpha_diversity_summary %>%
+  dplyr::group_by(Sequencer) %>%
+  dplyr::summarise(
+    Mean_Shannon = mean(Shannon),
+    SD_Shannon = sd(Shannon),
+    .groups = 'drop'
+  )
+
+print("--- Mean and SD of Shannon Diversity by Sequencer ---")
+print(alpha_diversity_final_summary)
+
+# --- 2.3.4 Statistical Test for Shannon Diversity ---
+
+# First, prepare the data by filtering for each sequencer
+shannon_illumina_values <- alpha_diversity_summary %>%
+  dplyr::filter(Sequencer == "Illumina") %>%
+  dplyr::pull(Shannon)
+
+shannon_nanopore_values <- alpha_diversity_summary %>%
+  dplyr::filter(Sequencer == "ONT") %>%
+  dplyr::pull(Shannon)
+
+# Perform the paired Wilcoxon signed-rank test
+# paired = TRUE is important because the samples are the same
+wilcox_test_result <- wilcox.test(shannon_illumina_values, shannon_nanopore_values, paired = TRUE)
+
+# Print the result
+print(wilcox_test_result)
+
+
+# --- 2.3.5 Visualize and Save Alpha Diversity Plot ---
+
+# First, create the plot and assign it to an object named 'alpha_diversity_plot'
+alpha_diversity_plot <- ggplot(alpha_diversity_summary, aes(x = Sequencer, y = Shannon, fill = Sequencer)) +
+  
+  # Add boxplot with black outline
+  geom_boxplot(
+    width = 0.5,
+    color = "black",
+    alpha = 0.7,
+    outlier.shape = NA) +
+  scale_y_continuous(limits = c(0, NA))+
+  
+  # Add jittered individual data points for transparency
+  geom_jitter(width = 0.15, height = 0, size = 2.5, shape = 21, fill = "white") +
+  
+  # Use a grayscale palette for the fill colors
+  scale_fill_grey(start = 0.6, end = 0.9) +
+  
+  # Set labels as requested
+  labs(
+    x = "Sequencer",
+    y = "Shannon diversity index"
+  ) +
+  
+  # Use a classic theme suitable for publications
+  theme_classic(base_size = 14) +
+  
+  # Fine-tune theme elements for better readability
+  theme(
+    axis.text = element_text(size = 12),
+    axis.title = element_text(size = 14),
+    legend.position = "none"
+  )
+
+# --- Save the plot to a file using ggsave() ---
+
+ggsave(
+  filename = "figures/fig1_alpha_diversity_comparison.png", # File path and name
+  plot = alpha_diversity_plot,                        # The plot object to save
+  width = 5,                                          # Width of the plot in inches
+  height = 4,                                         # Height of the plot in inches
+  dpi = 300                                           # Resolution (dots per inch) for publication quality
+)
+
+# Finally, display the plot in your R Markdown output as before
+print(alpha_diversity_plot)
+
+```
