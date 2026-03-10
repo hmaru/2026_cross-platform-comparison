@@ -1,133 +1,153 @@
 ---
-title: "R Notebook"
-output: html_notebook
+title: "03_alpha_diversity"
+author: "Hugo Maruyama"
+date: "2026-03-06"
+format:
+  html:
+    toc: true
+    embed-resources: true
+execute:
+  warning: false
+  message: false
 ---
 
+## Introduction
+
+Alpha diversity metrics provide insights into the internal complexity of microbial communities within individual samples. In this section, the Shannon diversity index is calculated to evaluate and compare the species-level richness and evenness captured by the Illumina MiSeq and Oxford Nanopore Technologies (ONT) platforms.
+
+## Environment Setup
+
+The `vegan` package, a standard tool for community ecology analysis, is utilized to compute the diversity indices.
+
 ```{r}
-# --- 2.3 Compare Alpha Diversity
-
-# (This step should be done using the UNFILTERED processed data)
-
-# Install and load the vegan package if you haven't already
-# install.packages("vegan")
+#| label: setup
+library(tidyverse)
 library(vegan)
+library(knitr)
+```
 
-# --- Prepare data for vegan ---
-# The vegan package requires a data frame where ROWS are samples and COLUMNS are species.
-# So, we need to transpose our data.
+## Data Preparation for Ecological Analysis
 
-# Function to prepare a data frame for vegan
+The `vegan` package requires input data in a specific format where samples are represented as rows and taxa as columns. A transformation function is implemented to prepare the harmonized datasets for diversity calculation.
+
+```{r}
+#| label: data-preparation
+
+# Load the processed data objects from the previous module
+illumina_processed <- readRDS("processed_data/illumina_processed.rds")
+nanopore_processed <- readRDS("processed_data/nanopore_processed.rds")
+
+# Function to transform the taxonomic tables for 'vegan' compatibility
 prepare_for_vegan <- function(df) {
   df %>%
-    # Use species as the unique identifier. Remove rows with NA species.
+    # Filter for species-level assignments and remove NAs
     dplyr::filter(!is.na(species)) %>%
-    # If multiple rows have the same species name, sum them up
+    # Aggregate abundances by species name to handle potential duplicates
     dplyr::group_by(species) %>%
     dplyr::summarise(dplyr::across(where(is.numeric), sum), .groups = 'drop') %>%
-    # Set species as row names
+    # Set species as row identifiers
     tibble::column_to_rownames("species") %>%
-    # Transpose the data frame so samples are rows
+    # Transpose to sample-by-taxa format
     t()
 }
 
-illumina_for_vegan <- prepare_for_vegan(illumina_processed) # Using relative abundance
-nanopore_for_vegan <- prepare_for_vegan(nanopore_processed) # Using counts before normalization *
-# *Note: For simplicity here, we use the normalized data. For perfect accuracy with richness,
-# you would start from the raw count data before the percentage conversion.
+illumina_for_vegan <- prepare_for_vegan(illumina_processed)
+nanopore_for_vegan <- prepare_for_vegan(nanopore_processed)
+```
 
-# --- 2.3.2 Calculate Shannon Diversity per sample ---
-# --- Calculate Shannon Diversity ---
+## Alpha Diversity Calculation
+
+The Shannon diversity index is computed for each sample across both sequencing platforms.
+
+```{r}
+#| label: calculate-alpha-diversity
+
+# Compute Shannon diversity index
 shannon_illumina <- diversity(illumina_for_vegan, index = "shannon")
 shannon_nanopore <- diversity(nanopore_for_vegan, index = "shannon")
 
-# --- Combine results into a tidy table ---
+# Consolidate results into a tidy data frame for analysis and visualization
 alpha_diversity_summary <- tibble(
   Sample = c(names(shannon_illumina), names(shannon_nanopore)),
-  Sequencer = c(rep("Illumina", 4), rep("ONT", 4)),
+  Sequencer = factor(c(rep("Illumina MiSeq", 4), rep("Oxford Nanopore", 4)), 
+                     levels = c("Illumina MiSeq", "Oxford Nanopore")),
   Shannon = c(shannon_illumina, shannon_nanopore)
 )
 
-print("--- Alpha Diversity (Shannon Index) ---")
-print(alpha_diversity_summary)
+# Display the diversity summary
+kable(alpha_diversity_summary, caption = "Shannon Diversity Index by Sample and Platform")
+```
 
-# --- 2.3.3 Calculate Mean and SD of Shannon Diversity ---
-# Group by sequencer and then calculate the mean and sd.
-alpha_diversity_final_summary <- alpha_diversity_summary %>%
-  dplyr::group_by(Sequencer) %>%
-  dplyr::summarise(
-    Mean_Shannon = mean(Shannon),
-    SD_Shannon = sd(Shannon),
-    .groups = 'drop'
-  )
+## Statistical Analysis
 
-print("--- Mean and SD of Shannon Diversity by Sequencer ---")
-print(alpha_diversity_final_summary)
+To determine if there is a significant difference in the alpha diversity captured by the two platforms, a paired Wilcoxon signed-rank test is performed. This non-parametric test is appropriate for comparing paired samples (same biological material sequenced on different platforms).
 
-# --- 2.3.4 Statistical Test for Shannon Diversity ---
+```{r}
+#| label: statistical-test
 
-# First, prepare the data by filtering for each sequencer
+# Extract values for the paired test
 shannon_illumina_values <- alpha_diversity_summary %>%
-  dplyr::filter(Sequencer == "Illumina") %>%
+  dplyr::filter(Sequencer == "Illumina MiSeq") %>%
   dplyr::pull(Shannon)
 
 shannon_nanopore_values <- alpha_diversity_summary %>%
-  dplyr::filter(Sequencer == "ONT") %>%
+  dplyr::filter(Sequencer == "Oxford Nanopore") %>%
   dplyr::pull(Shannon)
 
-# Perform the paired Wilcoxon signed-rank test
-# paired = TRUE is important because the samples are the same
+# Perform paired Wilcoxon signed-rank test
 wilcox_test_result <- wilcox.test(shannon_illumina_values, shannon_nanopore_values, paired = TRUE)
 
-# Print the result
+# Print test results
 print(wilcox_test_result)
+```
 
+## Visualization
 
-# --- 2.3.5 Visualize and Save Alpha Diversity Plot ---
+The distribution of Shannon diversity indices is visualized using boxplots overlaid with individual data points to provide a comprehensive view of the platform-specific variance.
 
-# First, create the plot and assign it to an object named 'alpha_diversity_plot'
+```{r}
+#| label: alpha-diversity
+
+# Create the publication-quality plot
 alpha_diversity_plot <- ggplot(alpha_diversity_summary, aes(x = Sequencer, y = Shannon, fill = Sequencer)) +
-  
-  # Add boxplot with black outline
   geom_boxplot(
     width = 0.5,
     color = "black",
     alpha = 0.7,
-    outlier.shape = NA) +
-  scale_y_continuous(limits = c(0, NA))+
-  
-  # Add jittered individual data points for transparency
-  geom_jitter(width = 0.15, height = 0, size = 2.5, shape = 21, fill = "white") +
-  
-  # Use a grayscale palette for the fill colors
-  scale_fill_grey(start = 0.6, end = 0.9) +
-  
-  # Set labels as requested
-  labs(
-    x = "Sequencer",
-    y = "Shannon diversity index"
+    outlier.shape = NA
   ) +
-  
-  # Use a classic theme suitable for publications
+  scale_y_continuous(limits = c(0, NA)) +
+  geom_jitter(width = 0.15, height = 0, size = 2.5, shape = 21, fill = "white") +
+  scale_fill_grey(start = 0.6, end = 0.9) +
+  labs(
+    x = "Sequencing Platform",
+    y = "Shannon Diversity Index"
+  ) +
   theme_classic(base_size = 14) +
-  
-  # Fine-tune theme elements for better readability
   theme(
     axis.text = element_text(size = 12),
     axis.title = element_text(size = 14),
     legend.position = "none"
   )
 
-# --- Save the plot to a file using ggsave() ---
+# Ensure the output directory exists
+if (!dir.exists("figures")) {
+  dir.create("figures")
+}
 
+# Save the plot for publication
 ggsave(
-  filename = "figures/fig1_alpha_diversity_comparison.png", # File path and name
-  plot = alpha_diversity_plot,                        # The plot object to save
-  width = 5,                                          # Width of the plot in inches
-  height = 4,                                         # Height of the plot in inches
-  dpi = 300                                           # Resolution (dots per inch) for publication quality
+  filename = "figures/fig1_alpha_diversity_comparison.png",
+  plot = alpha_diversity_plot,
+  width = 6,
+  height = 5,
+  dpi = 300
 )
 
-# Finally, display the plot in your R Markdown output as before
-print(alpha_diversity_plot)
-
+# Display the plot
+alpha_diversity_plot
 ```
+
+## Summary of Findings
+
+The alpha diversity analysis reveals the comparative performance of Illumina and Nanopore sequencing in characterizing the complexity of the 16S rRNA gene library. The statistical results indicate whether the observed differences in Shannon diversity are significant, which is a key consideration for interpreting the taxonomic resolution provided by each platform.

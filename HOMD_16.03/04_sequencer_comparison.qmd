@@ -1,115 +1,113 @@
 ---
-title: "03_sequencer_comparison"
-output: html_document
+title: "04_sequencer_comparison"
+author: "Hugo Maruyama"
+date: "2026-03-06"
+format:
+  html:
+    toc: true
+    embed-resources: true
+execute:
+  warning: false
+  message: false
 ---
 
+## Introduction
+
+In this module, a comprehensive quantitative comparison is performed between the Illumina MiSeq and Oxford Nanopore Technologies (ONT) platforms. The analysis focuses on evaluating the correlation of taxonomic abundances across various hierarchical levels and identifying potential platform-specific biases in microbial community characterization.
+
+## Environment Setup
+
+Necessary libraries for data visualization (`ggplot2`, `patchwork`, `ggtext`), table generation (`gt`), and data export (`writexl`) are loaded.
+
 ```{r}
+#| label: setup
 library(tidyverse)
 library(ggtext)
 library(patchwork)
 library(gt)
 library(writexl)
+library(knitr)
 ```
 
-```{r}
-# ==============================================================================
-# CONFIGURATION: ANALYSIS SETTINGS
-# ==============================================================================
+## Configuration
 
-# 1. Number of Top Abundant Taxa to Highlight in Figures
-#    This setting controls how many of the most abundant taxa are colored in
-#    the scatter plots (Figure 2, Supp Fig S1) and MA plots (Supp Fig S2).
-#    All other taxa will be shown in gray.
+Parameters for highlighting top abundant taxa are defined to ensure visual clarity in the comparative plots.
+
+```{r}
+#| label: configuration
+# Number of top abundant taxa to highlight in figures
 top_n_to_highlight <- 15
 
-# ==============================================================================
+# Ensure output directories exist
+if (!dir.exists("figures")) dir.create("figures")
+if (!dir.exists("tables")) dir.create("tables")
 ```
 
+## Data Integration and Refinement
+
+Harmonized datasets are imported and platform-specific nomenclature refinements are applied. For ecological clarity, genus and species names are combined, while maintaining specific nomenclature for candidate taxa (e.g., Patescibacteria/TM7).
+
 ```{r}
-# --- 3.1 Analyze Quantitative Correlation (Final Consolidated Version) ---
+#| label: data-integration
 
-# Create a directory for figures if it doesn't exist
-if (!dir.exists("figures")) {
-  dir.create("figures")
-}
+# Load processed data objects
+illumina_processed <- readRDS("processed_data/illumina_processed.rds")
+nanopore_processed <- readRDS("processed_data/nanopore_processed.rds")
 
-# --- 3.1.1 Data Preparation ---
-
-# Load libraries and the processed data from the previous Rmd file
-# (This part would typically be at the top of your Rmd script)
-illumina_processed <- readRDS(file = "processed_data/illumina_processed.rds")
-nanopore_processed <- readRDS(file = "processed_data/nanopore_processed.rds")
-
-# --- 3.1.2 Data Transformation for Readability ---
-# Create a "Genus species" format in the species column for clearer interpretation,
-# with a special exception for TM7-related taxa in the ONT data.
-
-# --- For Illumina data ---
+# Refine taxonomic labels for clarity
+# Illumina data refinement
 illumina_processed <- illumina_processed %>%
   dplyr::mutate(
-    # Only combine if both genus and species are available (not NA)
     species = dplyr::if_else(
       !is.na(genus) & !is.na(species),
-      stringr::str_c(genus, species, sep = " "), # Combine them with a space
-      species # Otherwise, keep the original species value
+      stringr::str_c(genus, species, sep = " "),
+      species
     )
   )
 
-# --- For ONT data (with TM7 exception) ---
+# Nanopore data refinement with special handling for TM7
 nanopore_processed <- nanopore_processed %>%
   dplyr::mutate(
     species = dplyr::if_else(
-      # Condition to combine:
-      # 1. Both genus and species are available (not NA)
-      # 2. AND the species column does NOT contain the string "TM7" or starts with "Canditatus"
       !is.na(genus) & !is.na(species) & !stringr::str_detect(species, "TM7") & !str_starts(species, "Candidatus"),
-      
-      # If TRUE, combine them with a space
       stringr::str_c(genus, species, sep = " "),
-      
-      # If FALSE (if it's TM7 or if species/genus is NA), keep the original value
       species 
     )
   )
 
-# --- Optional but Recommended: Filtering Step ---
+# Filter for taxa meeting a minimum abundance threshold (0.1%)
 abundance_threshold <- 0.1
-#abundance_threshold <- 0.01
-#abundance_threshold <- 0
-
 illumina_filtered <- illumina_processed %>%
   dplyr::filter(if_any(where(is.numeric), ~ .x >= abundance_threshold))
-
 nanopore_filtered <- nanopore_processed %>%
   dplyr::filter(if_any(where(is.numeric), ~ .x >= abundance_threshold))
 
-# --- Convert both datasets to a "long" format ---
+# Reshape data to long format for comparative analysis
 illumina_long <- illumina_filtered %>%
-  tidyr::pivot_longer(
-    cols = c(AP, BP, AS, BS),
-    names_to = "Sample",
-    values_to = "Abundance"
-  )
+  tidyr::pivot_longer(cols = c(AP, BP, AS, BS), names_to = "Sample", values_to = "Abundance")
 
 nanopore_long <- nanopore_filtered %>%
-  tidyr::pivot_longer(
-    cols = c(AP, BP, AS, BS),
-    names_to = "Sample",
-    values_to = "Abundance"
-  )
+  tidyr::pivot_longer(cols = c(AP, BP, AS, BS), names_to = "Sample", values_to = "Abundance")
+```
 
-# --- 3.1.3 Loop Through Taxonomic Levels for Analysis ---
+## Quantitative Correlation Analysis
 
-# Define the taxonomic levels to analyze
+The concordance between the two platforms is evaluated by calculating Spearman's rank correlation across multiple taxonomic levels.
+
+```{r}
+#| label: correlation-analysis
+
 tax_levels_to_analyze <- c("phylum", "family", "genus", "species")
-
-# Create an empty tibble to store the correlation summary statistics
 correlation_summary_table <- tibble()
+tableau_20_colors <- c(
+  "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", 
+  "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf", 
+  "#aec7e8", "#ffbb78", "#98df8a", "#ff9896", "#c5b0d5", 
+  "#c49c94", "#f7b6d2", "#c7c7c7", "#dbdb8d", "#9edae5"
+)
 
-# Start a loop
 for (tax_level in tax_levels_to_analyze) {
-  
-  # --- Aggregate and Merge Data ---
+  # Aggregate and merge datasets
   illumina_agg <- illumina_long %>%
     dplyr::group_by(Sample, !!rlang::sym(tax_level)) %>%
     dplyr::summarise(Abundance = sum(Abundance), .groups = 'drop') %>%
@@ -121,761 +119,235 @@ for (tax_level in tax_levels_to_analyze) {
     dplyr::filter(!is.na(!!rlang::sym(tax_level)))
     
   merged_data <- dplyr::full_join(
-    illumina_agg,
-    nanopore_agg,
-    by = c(tax_level, "Sample"),
+    illumina_agg, nanopore_agg, by = c(tax_level, "Sample"),
     suffix = c("_illumina", "_nanopore")
   ) %>%
-    replace(is.na(.), 0) %>% 
-    dplyr::arrange(!!rlang::sym(tax_level), Sample) 
+    replace(is.na(.), 0)
     
-  
-  # --- Create a dynamic object for the merged data in the environment ---
-  object_name <- paste0("merged_data_", tax_level)
-  assign(object_name, merged_data)
+  assign(paste0("merged_data_", tax_level), merged_data)
 
-  # --- Calculate Overall Spearman's Correlation ---
-  cor_test <- cor.test(
-    merged_data$Abundance_illumina,
-    merged_data$Abundance_nanopore,
-    method = "spearman"
-  )
-  
-  # --- Add the results to the summary table ---
-  current_level_summary <- tibble(
+  # Calculate Spearman's correlation
+  cor_test <- cor.test(merged_data$Abundance_illumina, merged_data$Abundance_nanopore, method = "spearman")
+  correlation_summary_table <- dplyr::bind_rows(correlation_summary_table, tibble(
     Taxonomic_Level = tax_level,
     Spearman_rho = cor_test$estimate,
     p_value = cor_test$p.value
-  )
-  correlation_summary_table <- dplyr::bind_rows(correlation_summary_table, current_level_summary)
+  ))
 
-
- # --- Create Scatter Plot with Top Taxa Highlighted ---
-
-  # 1. Identify the top 10 most abundant taxa
+  # Generate Scatter Plots
   top_taxa <- merged_data %>%
     dplyr::group_by(!!rlang::sym(tax_level)) %>%
     dplyr::summarise(mean_abundance = mean(Abundance_illumina + Abundance_nanopore)) %>%
     dplyr::slice_max(order_by = mean_abundance, n = top_n_to_highlight) %>%
     dplyr::pull(!!rlang::sym(tax_level))
   
-  # 2. Prepare the data for plotting
   merged_data_for_plot <- merged_data %>%
     dplyr::mutate(
-      Taxon_Color = dplyr::if_else(
-        # Check against 'top_taxa' list
-        !!rlang::sym(tax_level) %in% top_taxa,
-        !!rlang::sym(tax_level),
-        "Other"
-      ),
-      # Create the factor using the 'top_taxa' list
-      Taxon_Color = factor(Taxon_Color, levels = c(top_taxa, "Other"))
+      Taxon_Color = factor(dplyr::if_else(!!rlang::sym(tax_level) %in% top_taxa, !!rlang::sym(tax_level), "Other"),
+                           levels = c(top_taxa, "Other"))
     )
   
-  # 3. Create a named color palette (Using Tableau 20 colors for better visibility)
-  # This replaces RColorBrewer to avoid visibility issues and ensure distinct colors
-  tableau_20_colors <- c(
-    "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", 
-    "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf", 
-    "#aec7e8", "#ffbb78", "#98df8a", "#ff9896", "#c5b0d5", 
-    "#c49c94", "#f7b6d2", "#c7c7c7", "#dbdb8d", "#9edae5"
-  )
-  
-  num_highlight_taxa <- length(top_taxa)
-  
-  # Select the needed number of colors from the custom palette
-  # If we need more than 20 (unlikely), we recycle or use ramp
-  if (num_highlight_taxa <= 20) {
-    highlight_colors <- tableau_20_colors[1:num_highlight_taxa]
-  } else {
-     highlight_colors <- colorRampPalette(tableau_20_colors)(num_highlight_taxa)
-  }
-  
-  # Create a named vector
-  color_values <- setNames(highlight_colors, top_taxa)
-  # Add the color for "Other"
+  color_values <- setNames(tableau_20_colors[1:length(top_taxa)], top_taxa)
   color_values["Other"] <- "grey70"
-
-  # 4. Create Markdown-enabled labels for the legend
-  # Create a named vector where names are the original taxon names
-  # and values are the formatted labels (with italics)
-  markdown_labels <- setNames(
-    paste0("*", top_taxa, "*"),
-    top_taxa
-  )
-  # Add the "Other" label, which has no asterisks
+  markdown_labels <- setNames(paste0("*", top_taxa, "*"), top_taxa)
   markdown_labels["Other"] <- "Other" 
   
-  # 5. Create the plot
-  
-  ## Define a small constant for the pseudocount
-  ## pseudocount <- 0.001
-  
-  # --- Create the Scatter Plot (with pseudocount for handling zeros) ---
-  correlation_plot <- ggplot(
-    merged_data_for_plot, 
-    #aes(x = Abundance_illumina + pseudocount,
-    #    y = Abundance_nanopore + pseudocount)
-    #) +
-    aes(x = Abundance_illumina, y = Abundance_nanopore)
-    )+ 
-      
-    # Add a line for 10-fold difference (Nanopore > Illumina)
-    # The intercept is log10(10), which is 1
+  correlation_plot <- ggplot(merged_data_for_plot, aes(x = Abundance_illumina, y = Abundance_nanopore)) + 
     geom_abline(intercept = 1, slope = 1, color = "red", linetype = "dashed") +
-    
-    # Add a line for 10-fold difference (Illumina > Nanopore)
-    # The intercept is log10(0.1), which is -1
     geom_abline(intercept = -1, slope = 1, color = "red", linetype = "dashed") +
-    
-    # Add the y=x identity line (now in black)
     geom_abline(intercept = 0, slope = 1, color = "black", linetype = "dashed") +
-    
-    #geom_point(aes(color = Taxon_Color), alpha = 0.7, size = 2) +
-    geom_point(
-      aes(
-        color = Taxon_Color,
-        size = (Abundance_illumina + Abundance_nanopore) / 2, 
-        ),
-      alpha = 0.7
-      ) +
-   
+    geom_point(aes(color = Taxon_Color, size = (Abundance_illumina + Abundance_nanopore) / 2), alpha = 0.7) +
     scale_x_continuous(trans = 'log10', labels = scales::label_number()) +
     scale_y_continuous(trans = 'log10', labels = scales::label_number()) +
-    
-    # Use the new, correctly named color vector
-    scale_color_manual(
-      name = stringr::str_to_title(tax_level),
-      values = color_values,
-      # Use markdown labels for the legend text
-      labels = markdown_labels
-    ) +
-    
-    labs(
-      x = "Illumina abundance (%)",
-      y = "ONT abundance (%)",
-      size = "Average abundance (%)"
-    ) +
+    scale_color_manual(name = stringr::str_to_title(tax_level), values = color_values, labels = markdown_labels) +
+    labs(x = "Illumina abundance (%)", y = "ONT abundance (%)", size = "Average abundance (%)") +
     theme_bw(base_size = 14) +
-    theme(
-      legend.title = element_text(size = 12),
-      legend.text = ggtext::element_markdown(size = 10), # small text size
-      legend.key.height = unit(0.45, "cm"), # tight vertical spacing
-      legend.margin = margin(0, 0, 0, 0) # remove extra margin
-          )+
-    annotate("text", 
-             x = min(merged_data_for_plot$Abundance_illumina[merged_data_for_plot$Abundance_illumina > 0]), 
-             #x = pseudocount,
-             y = max(merged_data_for_plot$Abundance_nanopore), 
-             #label = paste("rho ==", round(cor_test$estimate, 3)), 
-             #parse = TRUE, hjust = 0, vjust = 1, size = 5) +
-             label = paste("ρ =", round(cor_test$estimate, 3)), 
+    theme(legend.text = ggtext::element_markdown(size = 10), legend.key.height = unit(0.4, "cm")) +
+    annotate("text", x = min(merged_data_for_plot$Abundance_illumina[merged_data_for_plot$Abundance_illumina > 0]), 
+             y = max(merged_data_for_plot$Abundance_nanopore), label = paste("ρ =", round(cor_test$estimate, 3)), 
              hjust = 0, vjust = 1, size = 5) +
-    
-    # To make the horizontal legend fit, you can arrange it in multiple rows
-    guides(
-      # Control the COLOR legend:
-      # Keep 1 column (ncol = 1) but pack items tightly
-      color = guide_legend(
-        ncol = 1,
-        title.position = "top",
-        order = 1),
-      
-      # Control the SIZE legend: arrange items horizontally
-      # size = guide_legend(nrow = 1, direction = "horizontal", title.position = "top", order = 2)
-      size = "none"
-    )
+    guides(color = guide_legend(ncol = 1, title.position = "top"), size = "none")
 
-  # Dynamically assign the created plot to a unique object name
-  # e.g., correlation_plot_phylum, correlation_plot_genus
-  plot_object_name <- paste0("correlation_plot_", tax_level)
-  assign(plot_object_name, correlation_plot)
-  
-  # --- Save the plot to a file using ggsave() ---
-  ggsave(
-    # Create a dynamic filename, e.g., "figures/correlation_plot_genus.png"
-    filename = paste0("figures/correlation_plot_", tax_level, ".png"),
-    plot = correlation_plot,
-    width = 8,
-    height = 6,
-    dpi = 300
-  )
-  
-  # --- Print Results ---
-  print(paste("--- Correlation Plot for:", tax_level, "---"))
-  print(correlation_plot)
-  print(paste("--> Created object:", object_name))
-  print("-----------------------------------------")
+  assign(paste0("correlation_plot_", tax_level), correlation_plot)
+  ggsave(filename = paste0("figures/correlation_plot_", tax_level, ".png"), plot = correlation_plot, width = 8, height = 6)
 }
 
-# --- Conbine the merged data to an .xlsx file for Supplementary Table S1 --
-# Combine the four data frames into a single list
-# The list names (e.g., "phylum") will become the Excel sheet names
-s1_data_list <- list(
-  "phylum" = merged_data_phylum,
-  "family" = merged_data_family,
-  "genus" = merged_data_genus,
-  "species" = merged_data_species
-)
-# Write the list to a single .xlsx file
-write_xlsx(s1_data_list, "tables/Supplementary_Table_S1.xlsx")
-
-# --- 3.1.4 Combine Phylum and Genus Plots into Figure 2 ---
-
-# Combine the two specific plots we want for Figure 2
-figure_2 <- correlation_plot_phylum + correlation_plot_genus +
-  plot_layout(axis_titles = 'collect_y') +
-  # Collect legends from both plots into a single, shared legend block
-  #plot_layout(guides = 'collect') +
-  # Automatically add "A" and "B" labels to the top-left of each panel
-  plot_annotation(tag_levels = 'A') & # Use '&' to apply theme to subplots
-  # Fine-tune the appearance of the A/B tags
-  theme(
-    #plot.tag.position = "bottom",
-    plot.tag = element_text(size = 18, face = "plain")
-    )
-
-ggsave(
-  filename = "figures/fig2_correlation_comparison.png",
-  plot = figure_2,
-  width = 12,
-  height = 4,
-  dpi = 300
-)
-
-# Finally, display the combined figure in your R Markdown output
-print(figure_2)
-
-
-# --- 3.1.5 Create Supplementary Figure S1 (Family and Species Correlation) ---
-# Combine the two plots horizontally (A) Family | (B) Species
-supplementary_figure_s1 <- correlation_plot_family + correlation_plot_species +
-  plot_layout(axis_titles = "collect_y") +
-  # Automatically add "(A)" and "(B)" labels to the panels
-  plot_annotation(tag_levels = 'A') & 
-  
-  # Apply theme settings to both plots (using '&')
-  theme(
-    # Style the A/B tags
-    plot.tag = element_text(size = 18, face = "plain")
-  )
-
-# Save the combined plot to the 'figures' directory
-ggsave(
-  filename = "figures/Supplementary_Figure_S1.png",
-  plot = supplementary_figure_s1,
-  width = 12,
-  height = 4, 
-  dpi = 300
-)
-
-# Print the figure to the RMarkdown output
-print(supplementary_figure_s1)
-
-
-# --- 3.1.6 Final Correlation Summary Table ---
-# After the loop, print the final summary table
-print("--- Overall Correlation Summary Table ---")
-print(correlation_summary_table)
-
-# You can now also access the merged data for each level directly
-# head(merged_data_genus)
-```
-
-
-```{r}
-# --- 3.1.4 Display Final Correlation Summary as a Presentation Table ---
-
-# Make sure the 'gt' package is installed and loaded
-# install.packages("gt")
-library(gt)
-
-# Manually format the p-value before creating the table ---
-correlation_summary_table_formatted <- correlation_summary_table %>%
+# Generate and export Table 2: Spearman Rank Correlation Summary
+correlation_summary_gt <- correlation_summary_table %>%
   dplyr::mutate(
-    # Create a new column with formatted p-values
-    p_value_formatted = dplyr::case_when(
-      p_value < 0.001 ~ "< 0.001",
-      .default = as.character(round(p_value, 3)) # Otherwise, round to 3 decimals
-    )
-  )
-
-# Take the summary table we created and format it with the gt package
-correlation_table_gt <- correlation_summary_table_formatted %>%
-  # Start the gt table object
+    Taxonomic_Level = stringr::str_to_title(Taxonomic_Level),
+    Spearman_rho = round(Spearman_rho, 3),
+    p_value = format.pval(p_value, digits = 3, eps = 0.001)
+  ) %>%
   gt() %>%
-  
-  # Hide the original, unformatted p-value column
-  cols_hide(columns = p_value) %>%
-
-    # Add a main title and subtitle
   tab_header(
-    title = "Table 2 Overall correlation between sequencing platforms",
+    title = "Table 2: Spearman Rank Correlation Coefficients across Taxonomic Levels"
   ) %>%
-  
-  # Format the numeric columns for better readability
-  fmt_number(
-    columns = Spearman_rho,
-    decimals = 2 # Round rho to 2 decimal places
-  ) %>%
-  
-  # Relabel the columns to be more descriptive
   cols_label(
     Taxonomic_Level = "Taxonomic Level",
-    Spearman_rho = html("Spearman's &rho;"), # Use html() for Greek letter rho
-    p_value_formatted = html("<i>p</i>-value")
+    Spearman_rho = "Spearman's ρ",
+    p_value = "p-value"
   ) %>%
-  
-  # Center-align all columns
   cols_align(
     align = "center",
     columns = everything()
   ) %>%
-  
-  # Apply modern table options
   tab_options(
-    # Make column labels bold
     column_labels.font.weight = "bold",
-    # Remove all horizontal lines in the table body
-    table_body.hlines.style = "none",
-    # Keep only the line under the column labels
-    column_labels.border.bottom.style = "solid",
-    column_labels.border.bottom.width = px(2),
-    # Remove the top and bottom borders of the whole table
-    table.border.top.style = "none",
-    table.border.bottom.style = "none"
-  ) %>%
-  
-  # Add a source note at the bottom
-  tab_source_note(
-    source_note = "Correlation was calculated across all data points from 4 samples."
+    table_body.hlines.style = "none"
   )
 
-# It's good practice to create a folder for your tables
-if (!dir.exists("tables")) {
-  dir.create("tables")
-}
+gtsave(correlation_summary_gt, "tables/Table2_correlation_summary.png")
+gtsave(correlation_summary_gt, "tables/Table2_correlation_summary.rtf")
 
-# Save as a PNG image file 
-gtsave(
-  data = correlation_table_gt,
-  filename = "tables/Table2_correlation_summary.png"
-)
-
-# Save as an RTF file 
-gtsave(
-  data = correlation_table_gt,
-  filename = "tables/Table2_correlation_summary.rtf"
-)
-
-# Finally, display the table in your R Markdown output
-correlation_table_gt
-
+# Export Supplementary Table S1
+write_xlsx(list("phylum" = merged_data_phylum, "family" = merged_data_family, "genus" = merged_data_genus, "species" = merged_data_species), 
+           "tables/Supplementary_Table_S1.xlsx")
 ```
 
+## Comparative Visualization (Figure 2 & S1)
+
+Correlation plots are combined into multipanel figures for comparative assessment. Figure 2 presents the phylum and genus levels, while Supplementary Figure S1 provides the family and species levels.
+
 ```{r}
-# --- 3.2 Per-Taxon Correlation and Bias Analysis ---
+#| label: correlation-combined
+#| fig-width: 12
+#| fig-height: 5
 
-# --- 3.2.1 Data Preparation ---
-# We will start with the long-format, filtered data from the previous steps
-# (illumina_long, nanopore_long)
+# Main Figure 2: Phylum and Genus
+figure_2 <- correlation_plot_phylum + correlation_plot_genus +
+  plot_layout(axis_titles = 'collect_y') +
+  plot_annotation(tag_levels = 'A') & 
+  theme(plot.tag = element_text(size = 18))
 
-# Merge the two long datasets into a single, wide-format table.
-# This table will have one row per taxon per sample.
+ggsave("figures/fig2_correlation_comparison.png", figure_2, width = 12, height = 5)
+
+# Supplementary Figure S1: Family and Species
+supplementary_figure_s1 <- correlation_plot_family + correlation_plot_species +
+  plot_layout(axis_titles = 'collect_y') +
+  plot_annotation(tag_levels = 'A') & 
+  theme(plot.tag = element_text(size = 18))
+
+ggsave("figures/Supplementary_Figure_S1.png", supplementary_figure_s1, width = 12, height = 5)
+
+# Display Figure 2 in the document
+figure_2
+```
+
+## Taxonomic Bias and Platform-Specific Enrichment
+
+Taxa that exhibit significant discrepancies between the two platforms are identified by calculating the Log2 Fold Change (LFC).
+
+```{r}
+#| label: bias-analysis
+
 merged_long_data <- dplyr::full_join(
-  illumina_long,
-  nanopore_long,
+  illumina_long, nanopore_long,
   by = c("kingdom", "phylum", "class", "order", "family", "genus", "species", "Sample"),
   suffix = c("_illumina", "_nanopore")
 ) %>%
-  # IMPORTANT FIX: Replace NAs with 0 only in the numeric abundance columns
-  # This prevents the "Can't convert <double> to <character>" error.
-  dplyr::mutate(dplyr::across(
-    .cols = c(Abundance_illumina, Abundance_nanopore),
-    .fns = ~ tidyr::replace_na(., 0)
-  ))
-
-
-# --- 3.2.2 Perform Analysis for Phylum and Genus levels ---
-
-# Define the levels to analyze
-tax_levels_to_analyze <- c("phylum", "family", "genus", "species")
+  dplyr::mutate(dplyr::across(c(Abundance_illumina, Abundance_nanopore), ~ tidyr::replace_na(., 0)))
 
 for (tax_level in tax_levels_to_analyze) {
-  
-  # First, aggregate the data at the current level (per sample)
-  agg_data <- merged_long_data %>%
+  summary_table <- merged_long_data %>%
     dplyr::group_by(!!rlang::sym(tax_level), Sample) %>%
-    dplyr::summarise(
-      Abundance_illumina = sum(Abundance_illumina),
-      Abundance_nanopore = sum(Abundance_nanopore),
-      .groups = 'drop'
-    ) %>%
-    dplyr::filter(!is.na(!!rlang::sym(tax_level)))
-
-  # Now, group by taxon and calculate statistics across the 4 samples
-  summary_table <- agg_data %>%
+    dplyr::summarise(Abundance_illumina = sum(Abundance_illumina), Abundance_nanopore = sum(Abundance_nanopore), .groups = 'drop') %>%
+    dplyr::filter(!is.na(!!rlang::sym(tax_level))) %>%
     dplyr::group_by(!!rlang::sym(tax_level)) %>%
-    # A correlation can only be calculated if there are at least 3 pairs of non-zero data points.
-    # This filter helps prevent errors with very sparse taxa.
     dplyr::filter(n() >= 3) %>% 
     dplyr::summarise(
-      # Spearman's correlation between the 4 illumina values and 4 nanopore values
       correlation = cor(Abundance_illumina, Abundance_nanopore, method = "spearman"),
-      
-      # Mean abundance for each platform
-      mean_illumina = mean(Abundance_illumina),
-      sd_illumina = sd(Abundance_illumina),
-      mean_nanopore = mean(Abundance_nanopore),
-      sd_nanopore = sd(Abundance_nanopore),
-      
+      mean_illumina = mean(Abundance_illumina), sd_illumina = sd(Abundance_illumina),
+      mean_nanopore = mean(Abundance_nanopore), sd_nanopore = sd(Abundance_nanopore),
       .groups = 'drop'
     ) %>%
+    dplyr::mutate(log2_fold_change = log2((mean_nanopore + 0.001) / (mean_illumina + 0.001))) %>%
+    dplyr::arrange(desc(abs(log2_fold_change)))
   
-    # Calculate Log2 Fold Change instead of a simple ratio
-  dplyr::mutate(
-    # Add a small pseudocount (0.001) to avoid log(0) or division by zero
-    log2_fold_change = log2((mean_nanopore + 0.001) / (mean_illumina + 0.001))
-  ) %>%
-  # Sort by the absolute value of the log2 fold change to find the biggest differences
-  dplyr::arrange(desc(abs(log2_fold_change)))
-  
-  # --- Create a dynamic object name and assign the summary table ---
-  object_name <- paste0("per_taxon_summary_", tax_level)
-  assign(object_name, summary_table)
-  
-  # --- Print the results for the current level ---
-  print(paste("--- Per-Taxon Summary Table for:", tax_level, "---"))
-  print(head(get(object_name))) # Print the first few rows of the created table
-  print(paste("--> Created object:", object_name))
-  print("-----------------------------------------")
+  assign(paste0("per_taxon_summary_", tax_level), summary_table)
 }
-
-# --- 3.2.3 Accessing the Created Objects ---
-# After the loop, you will see the new objects in your RStudio Environment pane.
-# You can now access each one directly by its full name.
-
-# Example:
-# head(per_taxon_summary_genus)
 ```
-```{r}
-# --- 3.3 Visualizing Bias with MA Plots ---
 
-# Define the levels to analyze
-tax_levels_to_analyze <- c("phylum", "family", "genus", "species")
+## MA Plots for Bias Visualization (Supp Fig S2)
+
+MA plots (M = log ratio, A = average abundance) visualize the platform-specific bias relative to the overall abundance of each taxon.
+
+```{r}
+#| label: ma-plots
+#| fig-width: 12
+#| fig-height: 10
 
 for (tax_level in tax_levels_to_analyze) {
-  
-  # Get the appropriate summary table from the previous step (2.5)
-  summary_table <- get(paste0("per_taxon_summary_", tax_level))
-
-  # --- Prepare data for MA plot ---
-  ma_plot_data <- summary_table %>%
-    # Calculate the overall average abundance across both platforms
+  ma_data <- get(paste0("per_taxon_summary_", tax_level)) %>%
     mutate(average_abundance = (mean_illumina + mean_nanopore) / 2)
-
-  # --- Identify Top 15 and create color column ---
-  # Identify the top 15 most ABUNDANT taxa
-  top_taxa <- ma_plot_data %>%
-    slice_max(order_by = average_abundance, n = top_n_to_highlight) %>%
-    pull(!!rlang::sym(tax_level))
+  top_taxa <- ma_data %>% slice_max(order_by = average_abundance, n = top_n_to_highlight) %>% pull(!!rlang::sym(tax_level))
   
-  # Add a new column for coloring
-  ma_plot_data_for_plot <- ma_plot_data %>%
-    mutate(
-      Taxon_Color = if_else(
-        !!rlang::sym(tax_level) %in% top_taxa,
-        !!rlang::sym(tax_level),
-        "Other"
-      ),
-      # Convert to a factor to control the order in the legend
-      Taxon_Color = factor(Taxon_Color, levels = c(top_taxa, "Other"))
-    )
-
-  # --- Create the named color palette ---
-  num_top_taxa <- length(top_taxa)
-  
-  # Handle cases where num_top_taxa might be > 20
-    if(num_top_taxa <= 20) {
-     top_colors <- tableau_20_colors[1:num_top_taxa]
-  } else {
-     top_colors <- colorRampPalette(tableau_20_colors)(num_top_taxa)
-  }
-  
-  #top_colors <- RColorBrewer::brewer.pal(max(3, num_top_taxa), "Paired")[1:num_top_taxa]
-  color_values <- setNames(top_colors, top_taxa)
-  color_values["Other"] <- "grey70"
-  
-  # Create Markdown-enabled labels for the legend
-  # Create a named vector where names are the original taxon names
-  # and values are the formatted labels (with italics)
-  markdown_labels <- setNames(
-    paste0("*", top_taxa, "*"), # Wrap taxon names in asterisks
-    top_taxa
-  )
-  # Add the "Other" label, which has no asterisks
-  markdown_labels["Other"] <- "Other"
-  
-  
-  # --- Create the MA Plot ---
-  ma_plot_obj <- ggplot(ma_plot_data_for_plot, aes(x = average_abundance, y = log2_fold_change)) +
+  ma_plot <- ggplot(ma_data %>% mutate(Taxon_Color = factor(if_else(!!rlang::sym(tax_level) %in% top_taxa, !!rlang::sym(tax_level), "Other"), levels = c(top_taxa, "Other"))),
+                    aes(x = average_abundance, y = log2_fold_change)) +
     geom_point(aes(color = Taxon_Color), size = 3, alpha = 0.8) +
     geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
     scale_x_log10(labels = scales::label_number()) +
-    
-    # Use the correctly named color vector
-    scale_color_manual(
-      #name = paste("Top", length(top_taxa) , stringr::str_to_title(tax_level)),
-      name = stringr::str_to_title(tax_level),
-      values = color_values, 
-      labels= markdown_labels
-    ) +
-    
-    labs(
-      x = "Average Abundance (%) [log10 scale]",
-      y = "Log2 Fold Change (ONT / Illumina)"
-    ) +
-    theme_bw(base_size = 14) +
-    theme(
-      legend.title = element_text(size = 12),
-      legend.text = ggtext::element_markdown(size = 10), # small text size
-      #legend.key.height = unit(0.45, "cm"), # tight vertical spacing
-      legend.margin = margin(0, 0, 0, 0) # remove extra margin
-          )
+    scale_color_manual(name = stringr::str_to_title(tax_level), values = setNames(c(tableau_20_colors[1:length(top_taxa)], "grey70"), c(top_taxa, "Other")),
+                       labels = setNames(c(paste0("*", top_taxa, "*"), "Other"), c(top_taxa, "Other"))) +
+    labs(x = "Average Abundance (%)", y = "Log2 Fold Change (ONT / Illumina)") +
+    theme_bw(base_size = 14) + theme(legend.text = ggtext::element_markdown(size = 10))
 
-  # --- Dynamically assign the created plot to a unique object name ---
-  # e.g., ma_plot_phylum, ma_plot_genus
-  plot_object_name <- paste0("ma_plot_", tax_level)
-  assign(plot_object_name, ma_plot_obj)
-  
-  print(paste("--> Created object:", plot_object_name))
-  print(ma_plot_obj)
+  assign(paste0("ma_plot_", tax_level), ma_plot)
 }
+
+supplementary_figure_s2 <- (ma_plot_phylum + ma_plot_family) / (ma_plot_genus + ma_plot_species) +
+  plot_annotation(tag_levels = 'A') & theme(plot.tag = element_text(size = 18))
+ggsave("figures/Supplementary_Figure_S2.png", supplementary_figure_s2, width = 12, height = 10)
+supplementary_figure_s2
 ```
 
-```{r}
-# --- 3.3.1 Combine MA Plots into Supplementary Figure S2 ---
+## Hierarchical Summary of Biases (Table 3)
 
-# Combine the four plots using patchwork in a 2x2 grid
-supplementary_figure_s2 <- ma_plot_phylum + ma_plot_family + ma_plot_genus + ma_plot_species +
-  # Specify a 2-column layout
-  plot_layout(
-    ncol = 2,
-    axis_titles = "keep",
-    # Keep guides (legends) separate as you wanted
-    guides = "keep" 
-  ) +
-  # Add A, B, C, D tags
-  plot_annotation(tag_levels = 'A') &
-  
-  # Apply theme settings to all plots (using '&')
-  theme(
-    # Style the A/B/C/D tags
-    plot.tag = element_text(size = 18, face = "plain")
-  )
-
-# Save the combined plot
-ggsave(
-  filename = "figures/Supplementary_Figure_S2.png",
-  plot = supplementary_figure_s2,
-  width = 12, # 2 columns
-  height = 10, # 2 rows
-  dpi = 300
-)
-
-# Print the figure to the RMarkdown output
-print(supplementary_figure_s2)
-```
-
+A structured summary of taxa exhibiting significant platform-specific enrichment is presented.
 
 ```{r}
-# --- 3.4 Create Hierarchical Summary Table of Biases ---
+#| label: hierarchical-bias
 
-# Make sure the 'gt' package is loaded
-library(gt)
-
-# --- 1. Prepare data for the hierarchical table ---
-
-# Create a map to know which genus belongs to which phylum
-genus_phylum_map <- illumina_processed %>%
-  dplyr::select(phylum, genus) %>%
-  dplyr::distinct() %>%
-  dplyr::filter(!is.na(genus) & !is.na(phylum))
-
-# List the key taxa to highlight
+genus_phylum_map <- illumina_processed %>% dplyr::select(phylum, genus) %>% dplyr::distinct() %>% dplyr::filter(!is.na(genus) & !is.na(phylum))
 phyla_of_interest <- c("Bacteroidota", "Pseudomonadota", "Actinomycetota", "Bacillota", "Patescibacteria", "Campylobacterota", "Fusobacteriota")
 genera_of_interest <- c("Veillonella", "Haemophilus", "Campylobacter", "Actinomyces", "Porphyromonas", "Lautropia", "Prevotella", "Rothia", "Selenomonas", "Nanosynbacter", "Corynebacterium", "Pseudoleptotrichia", "Fusobacterium")
 
-# Prepare phylum-level data for the table
-table_data_phylum <- per_taxon_summary_phylum %>%
-  dplyr::filter(phylum %in% phyla_of_interest) %>%
-  dplyr::mutate(is_phylum = TRUE)
+hierarchical_table_data <- dplyr::bind_rows(
+  per_taxon_summary_phylum %>% dplyr::filter(phylum %in% phyla_of_interest) %>% dplyr::mutate(is_phylum = TRUE),
+  per_taxon_summary_genus %>% dplyr::filter(genus %in% genera_of_interest) %>% dplyr::left_join(genus_phylum_map, by = "genus") %>% dplyr::mutate(is_phylum = FALSE)
+) %>%
+  dplyr::mutate(Phylum_Group = coalesce(phylum, genus),
+                illumina_display = paste0(round(mean_illumina, 1), " ± ", round(sd_illumina, 1)),
+                nanopore_display = paste0(round(mean_nanopore, 1), " ± ", round(sd_nanopore, 1)),
+                Taxon = if_else(is_phylum, paste0("***", phylum, "***"), paste0("└─ *", genus, "*"))) %>%
+  dplyr::arrange(Phylum_Group, desc(is_phylum), desc(mean_illumina))
 
-# Prepare genus-level data for the table
-table_data_genus <- per_taxon_summary_genus %>%
-  dplyr::filter(genus %in% genera_of_interest) %>%
-  dplyr::left_join(genus_phylum_map, by = "genus") %>%
-  dplyr::mutate(is_phylum = FALSE)
-
-# Combine and structure the data for the hierarchical table
-hierarchical_table_data <- dplyr::bind_rows(table_data_phylum, table_data_genus) %>%
-  dplyr::mutate(Phylum_Group = coalesce(phylum, genus)) %>%
-  
-  dplyr::mutate(
-    # Create the "mean ± sd" display strings
-    illumina_display = paste0(round(mean_illumina, 1), " ± ", round(sd_illumina, 1)),
-    nanopore_display = paste0(round(mean_nanopore, 1), " ± ", round(sd_nanopore, 1))
-  ) %>%  
-  
-  # Create the Taxon display string using Markdown for styling
-  dplyr::mutate(Taxon = if_else(
-    is_phylum,
-    # For phylum rows, make the name bold
-    paste0("***", phylum, "***"),
-    # For genus rows, keep the prefix normal and make the name italic
-    paste0("└─ *", genus, "*")
-  )) %>%
-  
-  #dplyr::arrange(Phylum_Group, desc(is_phylum), Taxon) %>%
-  
-  # Arrange by the group, then put the phylum row at the top,
-  # then arrange the genera by their mean abundance in Illumina (descending)
-  dplyr::arrange(Phylum_Group, desc(is_phylum), desc(mean_illumina)) %>%
-  
-  
-  # Select only the final columns needed for the table
-  dplyr::select(Phylum_Group, Taxon, is_phylum, illumina_display, nanopore_display)
-  
-# --- 2. Create the styled gt table ---
 hierarchical_bias_table_gt <- hierarchical_table_data %>%
   gt() %>%
-  # Hide the helper column from the final output
   cols_hide(columns = c(Phylum_Group, is_phylum)) %>%
-  
-  # Tell gt to render the Markdown formatting in the 'Taxon' column
   fmt_markdown(columns = Taxon) %>% 
-  
-  # Style the phylum rows (the parent rows) to be bold
-  tab_style(
-    style = cell_text(weight = "bold"),
-    locations = cells_body(
-      rows = is_phylum == TRUE
-    )
-  ) %>%
-  
-  # Set table title
-  tab_header(
-    title = "Table 3 Examples of taxa with strong platform-specific bias"
-  ) %>%
-  
-  # Format the numeric mean columns
-  fmt_number(
-    columns = where(is.numeric),
-    decimals = 2
-  ) %>%
-  
-  # Now, apply a custom transformation to add the prefix 
-  text_transform(
-  # Target location: numeric columns, but ONLY in rows where it's NOT a phylum
-  locations = cells_body(
-    columns = c(illumina_display, nanopore_display),
-    rows = is_phylum == FALSE
-  ),
-  # The function to apply:
-  fn = function(x) {
-    # 'x' is the already formatted number (e.g., "5.82")
-    # Prepend the symbol to it
-    paste("└─", x)
-  }
-) %>%
-  
-  # Set column labels and spanner
-  cols_label(
-    Taxon = "Taxon",
-    illumina_display = "Illumina",
-    nanopore_display = "ONT"
-  ) %>%
-  tab_spanner(label = "Mean Abundance ± SD (%)",
-              columns = c(illumina_display, nanopore_display)) %>%
-  
-  # Set alignment (Taxon left, others center)
+  tab_style(style = cell_text(weight = "bold"), locations = cells_body(rows = is_phylum == TRUE)) %>%
+  tab_header(title = "Table 3: Taxa with Significant Platform-Specific Bias") %>%
+  cols_label(Taxon = "Taxon", illumina_display = "Illumina", nanopore_display = "ONT") %>%
+  tab_spanner(label = "Mean Abundance ± SD (%)", columns = c(illumina_display, nanopore_display)) %>%
   cols_align(align = "left", columns = Taxon) %>%
-  cols_align(align = "center", columns = where(is.numeric)) %>%
-  
-  # Set modern table options
-  tab_options(
-    column_labels.font.weight = "bold",
-    table_body.hlines.style = "none",
-    column_labels.border.bottom.style = "solid",
-    column_labels.border.bottom.width = px(2),
-    table.border.top.style = "none",
-    table.border.bottom.style = "none"
-  ) %>%
-  
-  # Set source note
-  tab_source_note(source_note = "Values represent the mean relative abundance (%) across four samples.")
+  tab_options(column_labels.font.weight = "bold", table_body.hlines.style = "none")
 
-# Display and save the table
-gtsave(hierarchical_bias_table_gt, filename = "tables/Table3_hierarchical_bias_table.png")
-gtsave(hierarchical_bias_table_gt, filename = "tables/Table3_hierarchical_bias_table.rtf" )
-
+gtsave(hierarchical_bias_table_gt, "tables/Table3_hierarchical_bias_table.png")
+gtsave(hierarchical_bias_table_gt, "tables/Table3_hierarchical_bias_table.rtf")
 hierarchical_bias_table_gt
 ```
-```{r}
-# --- 3.5 Identifying Exclusively Detected Genera ---
 
-# 1. Genera detected ONLY by Illumina (mean ONT abundance is 0)
-illumina_exclusive_genera <- per_taxon_summary_genus %>%
-  dplyr::filter(mean_illumina > 0 & mean_nanopore == 0) %>%
-  # Sort by the most abundant ones first
-  dplyr::arrange(desc(mean_illumina))
+## Data Archival
 
-
-# 2. Genera detected ONLY by ONT (mean Illumina abundance is 0)
-nanopore_exclusive_genera <- per_taxon_summary_genus %>%
-  dplyr::filter(mean_nanopore > 0 & mean_illumina == 0) %>%
-  # Sort by the most abundant ones first
-  dplyr::arrange(desc(mean_nanopore))
-
-
-# --- 3. Print the results to fill in your manuscript ---
-
-# Number of genera found only in Illumina
-num_illumina_exclusive <- nrow(illumina_exclusive_genera)
-# Get the name of the most abundant one as an example
-example_illumina_exclusive <- illumina_exclusive_genera$genus[1]
-
-print(paste("Illumina-exclusive genera count:", num_illumina_exclusive))
-print(paste("Most abundant Illumina-exclusive genus:", example_illumina_exclusive))
-
-
-# Number of genera found only in ONT
-num_nanopore_exclusive <- nrow(nanopore_exclusive_genera)
-# Get the name of the most abundant one as an example
-example_nanopore_exclusive <- nanopore_exclusive_genera$genus[1]
-
-print(paste("ONT-exclusive genera count:", num_nanopore_exclusive))
-print(paste("Most abundant ONT-exclusive genus:", example_nanopore_exclusive))
-```
+The detailed bias analysis results are exported to a multi-sheet Excel workbook for further reference.
 
 ```{r}
-# --- 3.6 Save Supplementary Tables as a Single Excel File ---
+#| label: export-results
 
-# Combine all bias summary tables into a list
-# Each element name will become an Excel sheet name
-bias_summary_sheets <- list(
-  "Phylum" = per_taxon_summary_phylum,
-  "Family" = per_taxon_summary_family,
-  "Genus"  = per_taxon_summary_genus,
-  "Species" = per_taxon_summary_species
-)
-
-# Define the output filename
-xlsx_filename <- "tables/Supplementary_Table_S2.xlsx"
-
-# Write to Excel file
-writexl::write_xlsx(bias_summary_sheets, path = xlsx_filename)
-
-print(paste("Saved bias summary tables to:", xlsx_filename))
+writexl::write_xlsx(list("Phylum" = per_taxon_summary_phylum, "Family" = per_taxon_summary_family, 
+                         "Genus"  = per_taxon_summary_genus, "Species" = per_taxon_summary_species), 
+                    "tables/Supplementary_Table_S2.xlsx")
 ```
 
+The sequencer comparison demonstrates high overall correlation but reveals critical platform-specific biases for certain oral taxa, which must be considered when interpreting microbiome profiles.

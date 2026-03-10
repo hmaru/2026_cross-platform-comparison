@@ -1,30 +1,43 @@
 ---
-title: "Taxonomic assignment rate"
-output:
-  html_document:
-    df_print: paged
+title: "05_taxonomic_assignment_rate"
+author: "Hugo Maruyama"
+date: "2026-03-06"
+format:
+  html:
+    toc: true
+    embed-resources: true
+execute:
+  warning: false
+  message: false
 ---
 
+## Introduction
+
+Taxonomic assignment rate is a critical metric for evaluating the performance of sequencing platforms and bioinformatics pipelines. It represents the proportion of sequencing reads that can be confidently assigned to specific taxonomic ranks (e.g., genus or species). In this section, the assignment rates of Illumina MiSeq and Oxford Nanopore Technologies (ONT) platforms are compared across all hierarchical levels.
+
+## Environment Setup
+
+Necessary libraries for data processing and visualization are loaded.
+
 ```{r}
+#| label: setup
 library(tidyverse)
+library(knitr)
 ```
 
+## Data Integration and Refinement
+
+Harmonized datasets are imported and taxonomic nomenclature is standardized. For consistency with previous analysis modules, the species-level labels are refined while maintaining platform-specific naming conventions for unique taxa.
+
 ```{r}
-# --- 2.1 Load Processed Data ---
+#| label: data-integration
 
-# Load the necessary libraries
-library(tidyverse)
+# Load processed data objects from previous modules
+illumina_processed <- readRDS("processed_data/illumina_processed.rds")
+nanopore_processed <- readRDS("processed_data/nanopore_processed.rds")
 
-# 2.1.1 Load the cleaned data objects saved from the previous script
-illumina_processed <- readRDS(file = "processed_data/illumina_processed.rds")
-nanopore_processed <- readRDS(file = "processed_data/nanopore_processed.rds")
-
-print("Cleaned data loaded successfully.")
-
-# --- 2.1.2 Data Transformation for Readability ---
-# Create a "Genus species" format in the species column, with an exception for TM7 taxa.
-
-# --- For Illumina data (no change) ---
+# Standardize species-level nomenclature
+# Illumina: Combine genus and species
 illumina_processed <- illumina_processed %>%
   dplyr::mutate(
     species = dplyr::if_else(
@@ -34,63 +47,38 @@ illumina_processed <- illumina_processed %>%
     )
   )
 
-# --- For Nanopore data (with TM7 exception) ---
+# Nanopore: Combine genus and species with exception for TM7/Patescibacteria
 nanopore_processed <- nanopore_processed %>%
   dplyr::mutate(
     species = dplyr::if_else(
-      # Condition to combine:
-      # 1. Both genus and species are available (not NA)
-      # 2. AND the species column does NOT contain the string "TM7"
       !is.na(genus) & !is.na(species) & !stringr::str_starts(species, "TM7"),
-      
-      # If TRUE, combine them with a space
       stringr::str_c(genus, species, sep = " "),
-      
-      # If FALSE (if it's TM7 or if species/genus is NA), keep the original species value
       species 
     )
   )
-
-# --- Verify the change ---
-print("--- Head of Illumina data with updated species format ---")
-illumina_processed %>% dplyr::select(genus, species) %>% head()
-
-print("--- Head of Nanopore data with updated species format ---")
-nanopore_processed %>% dplyr::select(genus, species) %>% head()
-
-# You can also specifically check a TM7-related taxon to confirm it was NOT changed
-print("--- Verification of TM7 exception ---")
-nanopore_processed %>% 
-  dplyr::filter(stringr::str_detect(species, "TM7")) %>% 
-  dplyr::select(genus, species)
 ```
 
+## Calculation of Taxonomic Assignment Rates
+
+A function is defined to calculate the percentage of total abundance assigned at each taxonomic level. This metric is computed for each sample and then aggregated by sequencing platform.
+
 ```{r}
-# ---- 2.2 Compare taxonomic assignment rates ----
-# 2.2.1 Define calculation function
+#| label: calculate-assignment-rates
+
 #' Calculate Taxonomic Assignment Rates
 #'
-#' This function takes a processed abundance table and calculates the assignment rate
-#' (i.e., the percentage of total abundance that is not NA) for each taxonomic level.
-#'
-#' @param processed_df A processed data frame (e.g., illumina_final or nanopore_final).
-#' @param sequencer_name A string to label the data source (e.g., "Illumina").
-#' @return A data frame with assignment rates for each sample and taxonomic level.
-
-calculate_assignment_rates <- function(processed_df, sequencer_name) {
-  
+#' @param processed_df Processed abundance table
+#' @param sequencer_label Label for the sequencing platform
+#' @return Data frame with assignment rates per sample and level
+calculate_assignment_rates <- function(processed_df, sequencer_label) {
   taxa_levels <- c("kingdom", "phylum", "class", "order", "family", "genus", "species")
   
-  # Convert to long format
+  # Reshape to long format for calculation
   long_data <- processed_df %>%
-    tidyr::pivot_longer(
-      cols = where(is.numeric),
-      names_to = "Sample",
-      values_to = "Abundance"
-    )
+    tidyr::pivot_longer(cols = where(is.numeric), names_to = "Sample", values_to = "Abundance")
 
-  # Calculate assignment rates for each level
-  assignment_rates <- purrr::map_dfr(taxa_levels, function(level) {
+  # Compute assignment rates per level
+  purrr::map_dfr(taxa_levels, function(level) {
     long_data %>%
       dplyr::group_by(Sample) %>%
       dplyr::summarise(
@@ -99,114 +87,90 @@ calculate_assignment_rates <- function(processed_df, sequencer_name) {
       ) %>%
       dplyr::mutate(Taxonomic_Level = level)
   }) %>%
-    # Add a column to identify the sequencer
-    dplyr::mutate(Sequencer = sequencer_name)
-  
-  return(assignment_rates)
+    dplyr::mutate(Sequencer = sequencer_label)
 }
-```
 
-```{r}
-# 2.2.2 Apply function and combine
-# Calculate rates for Illumina data
-illumina_rates <- calculate_assignment_rates(illumina_processed, "Illumina")
+# Apply the calculation to both platforms
+illumina_rates <- calculate_assignment_rates(illumina_processed, "Illumina MiSeq")
+nanopore_rates <- calculate_assignment_rates(nanopore_processed, "Oxford Nanopore")
 
-# Calculate rates for Nanopore data
-nanopore_rates <- calculate_assignment_rates(nanopore_processed, "ONT")
-
-# Combine the two results into a single data frame
+# Combine results for comparative analysis
 combined_rates <- dplyr::bind_rows(illumina_rates, nanopore_rates)
-
-# --- View the combined results for each sample ---
-print("--- Combined assignment rates for each sample ---")
-print(combined_rates)
 ```
-```{r}
-# 2.2.3 Summarize for plotting
 
-# Define the order for the plot
+## Statistical Summary
+
+Assignment rates are summarized by calculating the mean and standard deviation for each taxonomic level and platform.
+
+```{r}
+#| label: summary-statistics
+
 taxa_levels <- c("kingdom", "phylum", "class", "order", "family", "genus", "species")
 
-# Calculate mean and SD, grouping by both Taxonomic_Level and Sequencer
-final_summary_table <- combined_rates %>%
+assignment_summary <- combined_rates %>%
   dplyr::group_by(Sequencer, Taxonomic_Level) %>%
   dplyr::summarise(
-    Mean_Assignment_Rate = mean(Assignment_Rate_Percent),
-    SD_Assignment_Rate = sd(Assignment_Rate_Percent),
+    Mean_Rate = mean(Assignment_Rate_Percent),
+    SD_Rate = sd(Assignment_Rate_Percent),
     .groups = 'drop'
   ) %>%
-  # Use factor to ensure the correct order in the plot
   dplyr::mutate(Taxonomic_Level = factor(Taxonomic_Level, levels = taxa_levels)) %>%
   dplyr::arrange(Taxonomic_Level)
 
-# --- View the final summary table ---
-print("--- Final summary table with mean and SD by sequencer ---")
-print(final_summary_table)
+# Display the summary table
+kable(assignment_summary, caption = "Mean Taxonomic Assignment Rates (%) by Platform")
 ```
+
+## Visualization of Assignment Rates
+
+Assignment rates are visualized using a combination of bar charts (means) and individual data points (samples) to highlight both the overall performance and the variance within each platform.
+
 ```{r}
-# 2.2.4 Visualize the comparison (B&W with Individual Data Points) 
+#| label: assignment-rates-plot
+#| fig-width: 7
+#| fig-height: 5
 
-# This plot uses TWO data frames:
-# - final_summary_table: for the summary bars and error bars
-# - combined_rates: for the individual data points
-
-assignment_rate_plot <- final_summary_table %>%
-  ggplot(aes(x = Taxonomic_Level, y = Mean_Assignment_Rate, fill = Sequencer)) +
-  
-  # 1. Bar chart for the mean (semi-transparent)
+assignment_rate_plot <- assignment_summary %>%
+  ggplot(aes(x = Taxonomic_Level, y = Mean_Rate, fill = Sequencer)) +
+  # Bar chart for mean values
   geom_bar(stat = "identity", position = position_dodge(), color = "black", alpha = 0.6) +
-  
-  # 2. Error bars for standard deviation
+  # Error bars for standard deviation
   geom_errorbar(
-    aes(ymin = Mean_Assignment_Rate - SD_Assignment_Rate, ymax = Mean_Assignment_Rate + SD_Assignment_Rate),
+    aes(ymin = Mean_Rate - SD_Rate, ymax = Mean_Rate + SD_Rate),
     width = 0.25,
     position = position_dodge(0.9)
   ) +
-
- # --- 3. Jittered points (NEW, CORRECTED VERSION) ---
+  # Individual sample data points
   geom_jitter(
     data = combined_rates,
-    # Use 'color = Sequencer' to provide the grouping for position_jitterdodge
     aes(y = Assignment_Rate_Percent, color = Sequencer), 
     position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.9),
     size = 2.0,
     shape = 21,
-    fill = "white" # The fill remains white
-    # We remove the static 'color = "black"' here because it's now mapped in aes()
+    fill = "white"
   ) +
-  # Add a manual color scale to force the outline of BOTH groups to be black
-  scale_color_manual(
-    values = c("Illumina" = "black", "ONT" = "black"),
-    # Hide this redundant legend
-    guide = "none" 
- ) +  
-
-  # (The rest of the theme and labels are the same)
+  scale_color_manual(values = c("Illumina MiSeq" = "black", "Oxford Nanopore" = "black"), guide = "none") +
   scale_fill_grey(start = 0.5, end = 0.8) +
   labs(
-    # title = "Comparison of Taxonomic Assignment Rates",
-    # subtitle = "Illumina vs. ONT",
-    x = "Taxonomic level",
-    y = "Assignment rate (%)" # Renamed for clarity
+    x = "Taxonomic Level",
+    y = "Assignment Rate (%)"
   ) +
   theme_classic(base_size = 14) +
   theme(
-    axis.text = element_text(size = 12),
-    axis.title = element_text(size = 16),
-    legend.text = element_text(size = 12),
-    legend.title = element_text(size = 14),
-    axis.text.x = element_text(angle = 45, hjust = 1)
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position = "top"
   )
 
-ggsave(
-  filename = "figures/fig3_assignment_rate_comparison.png", # File path and name
-  plot = assignment_rate_plot,                                # The plot object to save
-  width = 7,                                                 # Width of the plot in inches
-  height = 5,                                                # Height of the plot in inches
-  dpi = 300                                                  # Resolution for publication quality
-)
+# Ensure output directory exists
+if (!dir.exists("figures")) dir.create("figures")
 
-# Finally, display the plot in your R Markdown output
-print(assignment_rate_plot)
+# Save plot for publication
+ggsave("figures/fig3_assignment_rate_comparison.png", assignment_rate_plot, width = 7, height = 5, dpi = 300)
+
+# Display the plot
+assignment_rate_plot
 ```
 
+## Conclusion
+
+The analysis of taxonomic assignment rates reveals the resolution limits of each sequencing platform. Higher assignment rates at lower taxonomic ranks (e.g., genus and species) indicate superior taxonomic resolution, which is essential for detailed microbial community profiling.
