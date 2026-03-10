@@ -20,13 +20,13 @@ The analysis is structured into five sequential Quarto (`.qmd`) modules:
 
 ## How to View Results
 
-The analysis results, including all figures and tables, are available as pre-rendered HTML documents. You can view them directly in your browser:
+The analysis results, including all figures and tables, are available as interactive HTML documents. You can view the rendered reports directly in your browser:
 
--   [01: Data Preprocessing](HOMD_16.03/01_data_preprocessing.html)
--   [02: Sequencing Summary](HOMD_16.03/02_summary_table.html)
--   [03: Alpha Diversity](HOMD_16.03/03_alpha_diversity.html)
--   [04: Platform Comparison & Bias](HOMD_16.03/04_sequencer_comparison.html)
--   [05: Taxonomic Assignment Rate](HOMD_16.03/05_taxonomic_assignment_rate.html)
+-   **[01: Data Preprocessing](https://hmaru.github.io/2026_cross-platform-comparison/HOMD_16.03/01_data_preprocessing.html)**
+-   **[02: Sequencing Summary](https://hmaru.github.io/2026_cross-platform-comparison/HOMD_16.03/02_summary_table.html)**
+-   **[03: Alpha Diversity](https://hmaru.github.io/2026_cross-platform-comparison/HOMD_16.03/03_alpha_diversity.html)**
+-   **[04: Platform Comparison & Bias](https://hmaru.github.io/2026_cross-platform-comparison/HOMD_16.03/04_sequencer_comparison.html)**
+-   **[05: Taxonomic Assignment Rate](https://hmaru.github.io/2026_cross-platform-comparison/HOMD_16.03/05_taxonomic_assignment_rate.html)**
 
 ## Software Requirements
 
