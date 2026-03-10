@@ -19,6 +19,8 @@ This section summarizes the sequencing throughput achieved by the Illumina MiSeq
 
 In this analysis, non-chimeric read counts from the Illumina pipeline and filtered read counts from the ONT EPI2ME `wf-16s` workflow were utilized. These counts reflect the data quality after rigorous quality control and filtering processes.
 
+**Note:** The following table corresponds to **Table 1** in the main manuscript (Exported as `Table1_read_summary.png`).
+
 ```{r}
 #| label: sequencing-summary
 

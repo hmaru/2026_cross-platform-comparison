@@ -152,6 +152,7 @@ assignment_rate_plot <- assignment_summary %>%
   scale_color_manual(values = c("Illumina MiSeq" = "black", "Oxford Nanopore" = "black"), guide = "none") +
   scale_fill_grey(start = 0.5, end = 0.8) +
   labs(
+    title = "Figure 3: Taxonomic Assignment Rates across Hierarchical Levels",
     x = "Taxonomic Level",
     y = "Assignment Rate (%)"
   ) +
@@ -170,6 +171,8 @@ ggsave("figures/fig3_assignment_rate_comparison.png", assignment_rate_plot, widt
 # Display the plot
 assignment_rate_plot
 ```
+
+**Note:** This visualization corresponds to **Figure 3** in the main manuscript (Exported as `fig3_assignment_rate_comparison.png`).
 
 ## Conclusion
 
