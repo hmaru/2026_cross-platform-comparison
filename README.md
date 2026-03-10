@@ -1,10 +1,12 @@
-# 16S rRNA Gene Sequencing Platform Comparison: Illumina MiSeq vs. Oxford Nanopore Technologies
+# Supplementary Data: Cross-platform comparison of oral microbiome profiles under a unified reference database
 
-This repository contains the full analysis workflow for comparing 16S rRNA gene sequencing data generated from **Illumina MiSeq** (short-read) and **Oxford Nanopore Technologies (ONT)** (long-read) platforms, specifically focusing on the characterization of oral microbiomes.
+This repository provides the official supplementary data and reproducible analysis scripts for the following publication:
+
+> **Zheng J, Maruyama H, Okinaga T.** Cross-platform comparison of oral microbiome profiles under a unified reference database. *J Osaka Dent Univ* 2026; 60(1): 163-170. [https://doi.org/10.18905/jodu.60.1_163](https://doi.org/10.18905/jodu.60.1_163)
 
 ## Project Overview
 
-The objective of this study is to evaluate the taxonomic resolution, diversity metrics, and platform-specific biases of the two major sequencing technologies. By employing a harmonized bioinformatics pipeline and standardized taxonomic nomenclature (HOMD/HMT), we provide a robust framework for assessing the cross-platform comparability of microbial community profiles.
+The objective of this study is to evaluate the taxonomic resolution, diversity metrics, and platform-specific biases of the two major sequencing technologies (Illumina MiSeq vs. Oxford Nanopore Technologies). By employing a harmonized bioinformatics pipeline and standardized taxonomic nomenclature (HOMD/HMT), we provide a robust framework for assessing the cross-platform comparability of microbial community profiles.
 
 ## Analysis Workflow
 
@@ -38,4 +40,6 @@ The analysis was performed using **R (v4.x)** and **Quarto**. Key R packages inc
 **Hugo Maruyama**
 
 ## Citation
-*(Please update this section with the relevant publication details when available)*
+If you find this analysis or repository useful for your research, please cite our original publication:
+
+**Zheng J, Maruyama H, Okinaga T.** Cross-platform comparison of oral microbiome profiles under a unified reference database. *J Osaka Dent Univ* 2026; 60(1): 163-170. [https://doi.org/10.18905/jodu.60.1_163](https://doi.org/10.18905/jodu.60.1_163)
